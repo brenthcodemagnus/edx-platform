@@ -48,6 +48,7 @@ from xmodule.modulestore.mongo.base import MongoRevisionKey
 from xmodule.modulestore import ModuleStoreEnum
 from xmodule.modulestore.store_utilities import draft_node_constructor, get_draft_subtree_roots
 from xmodule.modulestore.tests.utils import LocationMixin
+from xmodule.util.duedate import escape_export_name
 
 
 log = logging.getLogger(__name__)
@@ -106,7 +107,10 @@ def import_static_content(
             asset_key = StaticContent.compute_location(target_id, fullname_with_subpath)
 
             policy_ele = policy.get(asset_key.path, {})
-            displayname = policy_ele.get('displayname', filename)
+
+            # During export display name is used to create files, it should not contain '/'. TNL-2669
+            # strip away slashes from path from the name
+            displayname = escape_export_name(policy_ele.get('displayname', filename))
             locked = policy_ele.get('locked', False)
             mime_type = policy_ele.get('contentType')
 

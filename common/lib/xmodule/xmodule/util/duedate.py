@@ -21,3 +21,15 @@ def get_extended_due_date(node):
     if not extended or extended < due_date:
         return due_date
     return extended
+
+
+def escape_export_name(name, replace_with='_'):
+    """
+    Few chars are not allowed in asset displayname, during import/export
+    Escape those chars with `replace_with` and return clean name
+    """
+    invalid_char = ['/', '\\']
+    for char in invalid_char:
+        if char in name:
+            name = name.replace(char, replace_with)
+    return name
