@@ -139,7 +139,7 @@ class ReverificationPartitionTest(ModuleStoreTestCase):
         # If user is enrolled in verified mode and has completed any checkpoint
 
         self.assertEqual(
-            VerificationPartitionScheme.VERIFIED_ALLOW_GROUP,
+            VerificationPartitionScheme.VERIFIED_ALLOW,
             VerificationPartitionScheme.get_group_for_user(
                 self.course.id,
                 self.user,
@@ -156,7 +156,7 @@ class ReverificationPartitionTest(ModuleStoreTestCase):
         )
 
         self.assertEqual(
-            VerificationPartitionScheme.VERIFIED_ALLOW_GROUP,
+            VerificationPartitionScheme.VERIFIED_ALLOW,
             VerificationPartitionScheme.get_group_for_user(
                 self.course.id,
                 self.user,
@@ -168,7 +168,7 @@ class ReverificationPartitionTest(ModuleStoreTestCase):
         # If user is enrolled in non verified mode
 
         self.assertEqual(
-            VerificationPartitionScheme.NON_VERIFIED_GROUP,
+            VerificationPartitionScheme.NON_VERIFIED,
             VerificationPartitionScheme.get_group_for_user(
                 self.course.id,
                 self.user_2,
@@ -180,7 +180,7 @@ class ReverificationPartitionTest(ModuleStoreTestCase):
         # If user is denied at any checkpoint
 
         self.assertEqual(
-            VerificationPartitionScheme.NON_VERIFIED_GROUP,
+            VerificationPartitionScheme.NON_VERIFIED,
             VerificationPartitionScheme.get_group_for_user(
                 self.course.id,
                 self.user_2,
@@ -194,7 +194,7 @@ class ReverificationPartitionTest(ModuleStoreTestCase):
         # delete the user status records from db.
         VerificationStatus.objects.get(user=self.user).delete()
         self.assertEqual(
-            VerificationPartitionScheme.VERIFIED_DENY_GROUP,
+            VerificationPartitionScheme.VERIFIED_DENY,
             VerificationPartitionScheme.get_group_for_user(
                 self.course.id,
                 self.user,

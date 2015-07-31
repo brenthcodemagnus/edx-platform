@@ -16,9 +16,9 @@ class VerificationPartitionScheme(object):
     """
     This scheme randomly assigns users into the partition's groups.
     """
-    NON_VERIFIED_GROUP = 'non_verified_group'
-    VERIFIED_ALLOW_GROUP = 'verified_allow_group'
-    VERIFIED_DENY_GROUP = 'verified_deny_group'
+    NON_VERIFIED = 'non_verified'
+    VERIFIED_ALLOW = 'verified_allow'
+    VERIFIED_DENY = 'verified_deny'
 
     @classmethod
     def get_group_for_user(cls, course_key, user, user_partition):
@@ -38,13 +38,13 @@ class VerificationPartitionScheme(object):
         if (
             not cls._is_enrolled_in_verified_mode(user, course_key) or cls._was_denied_at_any_checkpoint(user, course_key)
         ):
-            return cls.NON_VERIFIED_GROUP
+            return cls.NON_VERIFIED
         elif (
             cls._has_skipped_any_checkpoint(user, course_key) or cls._has_completed_checkpoint(user, course_key, checkpoint)
         ):
-            return cls.VERIFIED_ALLOW_GROUP
+            return cls.VERIFIED_ALLOW
         else:
-            return cls.VERIFIED_DENY_GROUP
+            return cls.VERIFIED_DENY
 
     @classmethod
     def key_for_partition(cls, xblock_location_id):
