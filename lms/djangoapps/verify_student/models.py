@@ -1239,7 +1239,8 @@ class VerificationStatus(models.Model):
     @classmethod
     def check_user_has_completed_checkpoint(cls, user_id, course_key, related_assessment_location):
         """
-        Get re-verification attempts against a user for a 'course_id' and checkpoint.
+        Get re-verification status against a user for a 'course_id' and checkpoint.
+        Only approved and submitted status considered as completed.
 
         Arguments:
             user_id(str): User Id string
