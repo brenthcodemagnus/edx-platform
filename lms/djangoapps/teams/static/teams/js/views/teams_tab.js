@@ -122,7 +122,8 @@
                                }),
                                main: new TeamEditView({
                                    tagName: 'create-new-team',
-                                   teamParams: teamsView.main.teamParams
+                                   teamParams: teamsView.main.teamParams,
+                                   primaryButtonTitle: 'Create'
                                })
                            });
                            self.render();

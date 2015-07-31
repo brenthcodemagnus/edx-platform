@@ -3,8 +3,6 @@
 Teams pages.
 """
 
-from bok_choy.promise import EmptyPromise
-
 from .course_page import CoursePage
 from ..common.paging import PaginatedUIMixin
 
@@ -89,6 +87,7 @@ class BrowseTeamsPage(CoursePage, PaginatedUIMixin):
 
     def is_browser_on_page(self):
         """Check if we're on the teams list page for a particular topic."""
+        self.wait_for_element_presence('.team-actions', 'Wait for the bottom links to be present')
         has_correct_url = self.url.endswith(self.url_path)
         teams_list_view_present = self.q(css='.teams-main').present
         return has_correct_url and teams_list_view_present
@@ -129,15 +128,6 @@ class BrowseTeamsPage(CoursePage, PaginatedUIMixin):
             query.first.click()
             self.wait_for_ajax()
 
-    def wait_for_action_links_tobe_present(self):
-        """
-        Verifies that action link are visible.
-        """
-        return EmptyPromise(
-            lambda: self.q(css='.team-actions').present,
-            'Wait for the bottom links to be present'
-        ).fulfill()
-
 
 class CreateTeamPage(CoursePage, FieldsMixin):
     """
@@ -157,7 +147,7 @@ class CreateTeamPage(CoursePage, FieldsMixin):
     def is_browser_on_page(self):
         """Check if we're on the create team page for a particular topic."""
         has_correct_url = self.url.endswith(self.url_path)
-        teams_create_view_present = self.q(css='.create-new-team').present
+        teams_create_view_present = self.q(css='.team-edit-fields').present
         return has_correct_url and teams_create_view_present
 
     @property
@@ -178,18 +168,14 @@ class CreateTeamPage(CoursePage, FieldsMixin):
     @property
     def validation_message_text(self):
         """Get the error message text"""
-        return self.q(css='.wrapper-msg .copy')[0].text
+        return self.q(css='.create-team.wrapper-msg .copy')[0].text
 
     def submit_form(self):
         """Click on create team button"""
-        query = self.q(css='.create-team .action-primary')
-        if query.present:
-            query.click()
-            self.wait_for_ajax()
+        self.q(css='.create-team .action-primary').first.click()
+        self.wait_for_ajax()
 
     def cancel_team(self):
         """Click on cancel team button"""
-        query = self.q(css='.create-team .action-cancel')
-        if query.present:
-            query.click()
-            self.wait_for_ajax()
+        self.q(css='.create-team .action-cancel').first.click()
+        self.wait_for_ajax()

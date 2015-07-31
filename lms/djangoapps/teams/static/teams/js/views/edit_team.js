@@ -24,6 +24,7 @@ define(['backbone',
                    this.topicId = options.teamParams.topicId;
                    this.languages = options.teamParams.languages;
                    this.countries = options.teamParams.countries;
+                   this.primaryButtonTitle = options.primaryButtonTitle || 'Submit';
 
                    _.bindAll(this, "goBackToTopic", "createTeam");
 
@@ -77,7 +78,7 @@ define(['backbone',
                },
 
                render: function() {
-                   this.$el.html(_.template(edit_team_template)({}));
+                   this.$el.html(_.template(edit_team_template)({primaryButtonTitle: this.primaryButtonTitle}));
                    this.set(this.teamNameField, '.team-required-fields');
                    this.set(this.teamDescriptionField, '.team-required-fields');
                    this.set(this.optionalDescriptionField, '.team-optional-fields');

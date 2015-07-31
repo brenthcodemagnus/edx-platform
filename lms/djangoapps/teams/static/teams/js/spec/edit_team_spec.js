@@ -30,8 +30,8 @@ define([
                 teamEditView.$('.create-team.form-actions .action-primary').click();
 
                 var message = teamEditView.$('.wrapper-msg');
-                expect(message.is(':visible')).toBeTruthy();
-                expect(message.find('.title').text().trim()).toBe("Your team could not created!");
+                expect(message.hasClass('is-hidden')).toBeFalsy();
+                expect(message.find('.title').text().trim()).toBe("Your team could not be created!");
                 expect(message.find('.copy').text().trim()).toBe(
                     "Check the highlighted fields below and try again."
                 );
@@ -76,36 +76,17 @@ define([
         });
 
         it('can render itself correctly', function () {
-            expectContent(
-                '.team-instructions',
-                "Enter information to describe your team. You cannot change these details after you create the team."
-            );
+            var fieldClasses = [
+                '.u-field-name',
+                '.u-field-description',
+                '.u-field-optional_description',
+                '.u-field-language',
+                '.u-field-country'
+            ];
 
-            expectContent('.u-field-name .u-field-title', "Team Name (Required) *");
-            expectContent(
-                '.u-field-name .u-field-message-help', "A name that identifies your team (maximum 255 characters)."
-            );
-            expectContent('.u-field-description .u-field-title', "Team Description (Required) *");
-            var descriptionFieldMessage = "A short description of the team to help other learners understand " +
-                "the goals or direction of the team (maximum 300 characters).";
-            expectContent('.u-field-description-message', descriptionFieldMessage);
-            expectContent('.u-field-optional_description .u-field-title', "Optional Characteristics");
-            var optionalDescriptionMessage = "Help other learners decide whether to join your team by specifying " +
-                "some characteristics for your team. Choose carefully, because fewer people might be interested in " +
-                "joining your team if it seems too restrictive.";
-            expectContent('.u-field-optional_description .u-field-message-help', optionalDescriptionMessage);
-            expectContent('.u-field-language .u-field-title', "Language");
-            expectContent(
-                '.u-field-language .u-field-message-help',
-                "The language that team members primarily use to communicate with each other."
-            );
-            expectContent('.u-field-country .u-field-title', "Country");
-            expectContent(
-                '.u-field-country .u-field-message-help', "The country that team members primarily identify with."
-            );
-
-            verifyDropdownData('.u-field-language select', [['a', 'aaa'], ['b', 'bbb']]);
-            verifyDropdownData('.u-field-country select', [['c', 'ccc'], ['d', 'ddd']]);
+            _.each(fieldClasses, function (fieldClass) {
+                expect(teamEditView.$el.find(fieldClass).length).toBe(1);
+            });
 
             expect(teamEditView.$('.create-team.form-actions .action-primary').length).toBe(1);
             expect(teamEditView.$('.create-team.form-actions .action-cancel').length).toBe(1);
@@ -114,8 +95,8 @@ define([
         it('can create a team', function () {
             var requests = AjaxHelpers.requests(this);
 
-            teamEditView.$('.u-field-name input').val('TeamName');
-            teamEditView.$('.u-field-textarea textarea').val('TeamDescription');
+            teamEditView.$('.u-field-name input').val(teamsData.name);
+            teamEditView.$('.u-field-textarea textarea').val(teamsData.description);
             teamEditView.$('.u-field-language select').val('a').attr("selected", "selected");
             teamEditView.$('.u-field-country select').val('c').attr("selected", "selected");
 
@@ -169,8 +150,8 @@ define([
         it("shows an error message for HTTP 500", function () {
             var requests = AjaxHelpers.requests(this);
 
-            teamEditView.$('.u-field-name input').val('TeamName');
-            teamEditView.$('.u-field-textarea textarea').val('TeamDescription');
+            teamEditView.$('.u-field-name input').val(teamsData.name);
+            teamEditView.$('.u-field-textarea textarea').val(teamsData.description);
 
             teamEditView.$('.create-team.form-actions .action-primary').click();
             teamsData.country = '';

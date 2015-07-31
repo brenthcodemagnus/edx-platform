@@ -474,13 +474,11 @@ class BrowseTeamsWithinTopicTest(TeamsTabBase):
         self.browse_teams_page.visit()
         self.verify_page_header()
 
-        self.browse_teams_page.wait_for_action_links_tobe_present()
         self.browse_teams_page.click_browse_all_teams_link()
         self.assertTrue(self.topics_page.is_browser_on_page())
 
         self.browse_teams_page.visit()
         self.verify_page_header()
-        self.browse_teams_page.wait_for_action_links_tobe_present()
         self.browse_teams_page.click_search_team_link()
         # TODO Add search page expectation once that implemented.
 
@@ -515,8 +513,6 @@ class CreateTeamTest(TeamsTabBase):
 
     def verify_and_navigate_to_create_team_page(self):
         """Navigates to the create team page and verifies."""
-        self.assertTrue(self.browse_teams_page.is_browser_on_page())
-        self.browse_teams_page.wait_for_action_links_tobe_present()
         self.browse_teams_page.click_create_team_link()
         self.verify_page_header()
 
@@ -590,7 +586,6 @@ class CreateTeamTest(TeamsTabBase):
         Then I should see the error message for exceeding length.
         """
         self.verify_and_navigate_to_create_team_page()
-        self.create_team_page.submit_form()
 
         # Fill the name field with >255 characters to see validation message.
         self.create_team_page.value_for_text_field(
@@ -598,11 +593,13 @@ class CreateTeamTest(TeamsTabBase):
             value='EdX is a massive open online course (MOOC) provider and online learning platform. '
                   'It hosts online university-level courses in a wide range of disciplines to a worldwide '
                   'audience, some at no charge. It also conducts research into learning based on how '
-                  'people use its platform. EdX differs from other MOOC platforms, such as Coursera and '
-                  'Udacity, in that it is nonprofit and runs on an open-source software platform. '
-                  'EdX was founded by the Massachusetts Institute of Technology and Harvard '
-                  'University in May 2012.'
+                  'people use its platform. EdX was created for students and institutions that seek to'
+                  'transform themselves through cutting-edge technologies, innovative pedagogy, and '
+                  'rigorous courses. More than 70 schools, nonprofits, corporations, and international'
+                  'organizations offer or plan to offer courses on the edX website. As of 22 October 2014,'
+                  'edX has more than 4 million users taking more than 500 courses online.'
         )
+        self.create_team_page.submit_form()
 
         self.assertEqual(
             self.create_team_page.validation_message_text,

@@ -19,11 +19,12 @@
 
             render: function () {
                 var message = interpolate_text(
-                    gettext("Try {browse_all_teams} or {search_team_descriptions}. If you still can't find a team to join, {create_new_team}."),
+                    gettext("Try {browse_span_start}browsing all teams{span_end} or {search_span_start}searching team descriptions{span_end}. If you still can't find a team to join, {create_span_start}create a new team in this topic{span_end}."),
                     {
-                        'browse_all_teams': '<a class="browse-teams" href="">' + gettext("browsing all teams") + '</a>',
-                        'search_team_descriptions': '<a class="search-team-descriptions" href="">' + gettext("searching team descriptions") + '</a>',
-                        'create_new_team': '<a class="create-team" href="">' + gettext("create a new team in this topic") + '</a>'
+                        'browse_span_start': '<a class="browse-teams" href="">',
+                        'search_span_start': '<a class="search-team-descriptions" href="">',
+                        'create_span_start': '<a class="create-team" href="">',
+                        'span_end': '</a>'
                     }
                 );
                 this.$el.html(this.template({message: message}));

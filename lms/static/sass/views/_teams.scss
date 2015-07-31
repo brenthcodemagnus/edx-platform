@@ -620,6 +620,10 @@
   }
 }
 
+.form-instructions {
+  margin: ($baseline/2) 0 $baseline 0;
+}
+
 .create-team.form-actions {
   margin-top: $baseline;
 }
