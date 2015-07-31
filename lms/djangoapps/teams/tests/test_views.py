@@ -154,6 +154,8 @@ class TeamAPITestCase(APITestCase, SharedModuleStoreTestCase):
 
         for user, course in [
                 ('student_enrolled', self.test_course_1),
+                ('staff', self.test_course_1),
+                ('course_staff', self.test_course_1),
                 ('student_enrolled_not_on_team', self.test_course_1),
                 ('student_enrolled_both_courses_other_team', self.test_course_1),
                 ('student_enrolled_both_courses_other_team', self.test_course_2)
@@ -165,6 +167,21 @@ class TeamAPITestCase(APITestCase, SharedModuleStoreTestCase):
         self.test_team_1.add_user(self.users['student_enrolled'])
         self.test_team_3.add_user(self.users['student_enrolled_both_courses_other_team'])
         self.test_team_5.add_user(self.users['student_enrolled_both_courses_other_team'])
+
+
+    def create_and_enroll_student(self, course=None):
+        """ Creates a new student and enrolls that student in the course.
+
+        Adds the new user to the self.users dictionary with the username as the key.
+
+        Returns the username once the user has been created.
+        """
+        user = UserFactory.create(password=self.test_password)
+        course = course if course is not None else self.test_course_1
+        CourseEnrollment.enroll(user, course.id, check_access=True)
+        self.users[user.username] = user
+
+        return user.username
 
     def login(self, user):
         """Given a user string, logs the given user in.
@@ -186,7 +203,7 @@ class TeamAPITestCase(APITestCase, SharedModuleStoreTestCase):
 
         If a user is specified in kwargs, that user is first logged in.
         """
-        user = kwargs.pop('user', 'student_enrolled')
+        user = kwargs.pop('user', 'student_enrolled_not_on_team')
         if user:
             self.login(user)
         func = getattr(self.client, method)
@@ -372,7 +389,7 @@ class TestCreateTeamAPI(TeamAPITestCase):
         (None, 401),
         ('student_inactive', 401),
         ('student_unenrolled', 403),
-        ('student_enrolled', 200),
+        ('student_enrolled_not_on_team', 200),
         ('staff', 200),
         ('course_staff', 200)
     )
@@ -387,7 +404,7 @@ class TestCreateTeamAPI(TeamAPITestCase):
 
     def test_naming(self):
         new_teams = [
-            self.post_create_team(data=self.build_team_data(name=name))
+            self.post_create_team(data=self.build_team_data(name=name), user=self.create_and_enroll_student())
             for name in ["The Best Team", "The Best Team", "The Best Team", "The Best Team 2"]
         ]
         self.assertEquals(
@@ -419,6 +436,7 @@ class TestCreateTeamAPI(TeamAPITestCase):
         self.post_create_team(400, self.build_team_data(**kwargs))
 
     def test_full(self):
+        creator = self.create_and_enroll_student()
         team = self.post_create_team(data=self.build_team_data(
             name="Fully specified team",
             course=self.test_course_1,
@@ -426,17 +444,26 @@ class TestCreateTeamAPI(TeamAPITestCase):
             topic_id='great-topic',
             country='CA',
             language='fr'
-        ))
+        ), user=creator)
 
         # Remove date_created and discussion_topic_id because they change between test runs
         del team['date_created']
         del team['discussion_topic_id']
-        self.assertEquals(team, {
+
+        # Since membership is its own list, we want to examine this separately.
+        team_membership = team['membership']
+        del team['membership']
+
+        # Verify that the creating user gets added to the team.
+        self.assertGreater(len(team_membership), 0)
+        member = team_membership[0]['user']
+        self.assertEqual(member['id'], creator)
+
+        self.assertEqual(team, {
             'name': 'Fully specified team',
             'language': 'fr',
             'country': 'CA',
             'is_active': True,
-            'membership': [],
             'topic_id': 'great-topic',
             'course_id': str(self.test_course_1.id),
             'id': 'fully-specified-team',

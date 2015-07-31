@@ -368,6 +368,8 @@ class TeamsListView(ExpandableFieldViewMixin, GenericAPIView):
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
             team = serializer.save()
+            # Add the creating user to the team.
+            team.add_user(request.user)
             return Response(CourseTeamSerializer(team).data)
 
 
