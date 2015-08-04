@@ -1934,6 +1934,9 @@ INSTALLED_APPS = (
     'teams',
 
     'xblock_django',
+
+    # Online consultation
+    'online_consultation',
 )
 
 ######################### CSRF #########################################

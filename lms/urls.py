@@ -447,6 +447,11 @@ if settings.COURSEWARE_ENABLED:
         url(r'^api/branding/v1/', include('branding.api_urls')),
     )
 
+    urlpatterns += (
+        #url(r'^api/consultation/', include('online_consultation.api_urls')),
+        url(r'^courses/{}/consultation'.format(settings.COURSE_ID_PATTERN), include('online_consultation.urls'), name="consultations_endpoints"),
+    )
+
     if settings.FEATURES["ENABLE_TEAMS"]:
         # Teams endpoints
         urlpatterns += (
