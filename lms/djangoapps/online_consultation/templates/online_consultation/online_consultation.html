@@ -9,7 +9,44 @@
 </%block>
 <%include file="/courseware/course_navigation.html" args="active_page='online-consultation'" />
 
-<div>
-	<h3>Online consultation view here</h3>
-	<p>This is the online consultation view</p>
+
+<div id="consultation-main">
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				
+				<div>
+					<h3>Online consultation view here</h3>
+					<p>This is the online consultation view</p>
+				</div>
+
+				<div
+					class="content"
+					ng-controller="MainController">
+				
+				    <div class="panel">
+				        <div class="panel-heading clearfix">
+				            <h3 class="panel-title">{{ title }}</h3>
+				            
+				        </div>
+				        <p class="well">{{ content }}</p>
+				    </div>
+				
+				</div>
+
+			</div>
+		</div>
+	</div>
+	
 </div>
+
+<link rel="stylesheet" type="text/css" href="${static.url('online_consultation/bootstrap/dist/css/bootstrap.css')}">
+
+<script type="text/javascript" data-main="${static.url('online_consultation/js/main')}" src="${static.url('online_consultation/requirejs/require.js')}"></script>
+
+## <%block name="js_extra">
+## 	<%static:require_module module_name="online-consultation/js/consultations_tab_factory" class_name="ConsultationsTabFactory">
+## 		new ConsultationsTabFactory();
+## 	</%static:require_module>
+## </%block>

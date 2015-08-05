@@ -1,0 +1,19 @@
+{
+  "name": "online_consultation",
+  "version": "1.5.0-ionisx",
+  "homepage": "https://github.com/brenthcodemagnus/edx-platform",
+  "description": "frontend dependencies for online consultation",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angularjs": "~1.4.3",
+    "bootstrap": "~3.3.5",
+    "requirejs": "~2.1.20"
+  }
+}
