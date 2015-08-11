@@ -1,6 +1,6 @@
 require.config({
 	paths: {
-		'angular': '../angularjs/angular'
+		'angular': '../bower_components/angularjs/angular'
 	},
 	shim: {
 		'angular': {
