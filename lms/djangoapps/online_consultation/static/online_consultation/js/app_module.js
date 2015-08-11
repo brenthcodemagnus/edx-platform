@@ -9,6 +9,23 @@ define(['angular','ui-router'],function(angular, ui_router){
 
 			$scope.content = "This is the content";
 		}])
+
+		.controller("InstructorsController", ["$scope", function($scope){
+			$scope.instructors = [
+				{
+					id: 1,
+					username: "brenthmiras"
+				},
+				{
+					id: 2,
+					username: "nferocious"
+				},
+				{
+					id: 3,
+					username: "rubberdont"
+				}
+			]
+		}])
 		
 		.config(function($stateProvider, $urlRouterProvider) {
 		    //
@@ -22,9 +39,10 @@ define(['angular','ui-router'],function(angular, ui_router){
 		            templateUrl: staticUrl("templates/home.html"),
 		            controller: "MainController"
 		        })
-		        .state('about', {
-		            url: "/about",
-		            templateUrl: staticUrl("templates/about.html")
+		        .state('instructors', {
+		            url: "/instructors",
+		            templateUrl: staticUrl("templates/instructors.html"),
+		            controller: "InstructorsController"
 		        })
 		});
 		
