@@ -9,6 +9,19 @@
 </%block>
 <%include file="/courseware/course_navigation.html" args="active_page='online-consultation'" />
 
+<script>
+
+    var STATIC_URL = "http://" + "${request.get_host()}" + "${static.url('online_consultation/')}";
+
+    console.log(STATIC_URL);
+
+    function staticUrl(path) {
+
+        return STATIC_URL + path;
+
+    }
+
+</script>
 
 <div id="consultation-main">
 
@@ -20,21 +33,20 @@
 					<h3>Online consultation view here</h3>
 					<p>This is the online consultation view</p>
 				</div>
-
-				<div
-					class="content"
-					ng-controller="MainController">
 				
-				    <div class="panel">
-				        <div class="panel-heading clearfix">
-				            <h3 class="panel-title">{{ title }}</h3>
-				            
-				        </div>
-				        <p class="well">{{ content }}</p>
-				    </div>
-				
-				</div>
+				<ul class="nav nav-pills">
 
+					<li ui-sref-active="active" role="presentation">
+						
+						<a ui-sref="home">Home</a>
+					</li>
+					<li ui-sref-active="active" role="presentation">
+						
+						<a ui-sref="about">About</a>
+					</li>
+				</ul>
+
+				<div ui-view></div>
 			</div>
 		</div>
 	</div>
