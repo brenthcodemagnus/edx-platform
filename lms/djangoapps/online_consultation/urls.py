@@ -3,7 +3,10 @@
 from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
 
-from .views import OnlineConsultationHomeView
+from .views import (
+	OnlineConsultationHomeView,
+	InstructorListView
+)
 
 urlpatterns = patterns(
     'online_consultation.views',
