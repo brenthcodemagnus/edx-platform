@@ -24,7 +24,11 @@ define(['angular','ui-router'],function(angular, ui_router){
 					id: 3,
 					username: "rubberdont"
 				}
-			]
+			];
+
+			$scope.placeholder_url = staticUrl("images/male-profile-placeholder.jpg");
+
+
 		}])
 		
 		.config(function($stateProvider, $urlRouterProvider) {
