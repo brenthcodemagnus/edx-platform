@@ -10,8 +10,13 @@
 <%include file="/courseware/course_navigation.html" args="active_page='online-consultation'" />
 
 <script>
+	
+	var config = {
+		BASE_URL: "${request.get_host()}",
+		COURSE_ID: "${course.id}"
+	};
 
-    var STATIC_URL = "http://" + "${request.get_host()}" + "${static.url('online_consultation/')}";
+    var STATIC_URL = "http://" + config.BASE_URL + "${static.url('online_consultation/')}";
 
     console.log(STATIC_URL);
 
