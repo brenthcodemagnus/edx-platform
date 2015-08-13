@@ -1,5 +1,8 @@
 <div class="row">
-    <div class="col-md-3 col-md-6" ng-repeat="ins in instructors">
+    <div
+    	class="col-md-3 col-md-6"
+    	ng-repeat="ins in instructors | filter:usernameFilter:true">
+
         <div class="thumbnail">
             <img ng-src="{{placeholder_url}}" alt="profile pic">
             
@@ -8,6 +11,7 @@
                 <p>Hi I'm {{ins.fields.username}}.</p>
                 <p>
                 	<a
+                		ng-click="viewSchedules(ins.fields.username)"
                 		class="btn btn-info"
                 		role="button">
                 		Consult
@@ -21,6 +25,8 @@
             </div>
         </div>
     </div>
+
+	<div ui-view></div>
 </div>
 
 <div class="row" ng-if="noInstructors()">

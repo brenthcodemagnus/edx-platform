@@ -1,7 +1,8 @@
 require.config({
 	paths: {
 		'angular': '../bower_components/angularjs/angular',
-		'ui-router': '../bower_components/angular-ui-router/release/angular-ui-router'
+		'ui-router': '../bower_components/angular-ui-router/release/angular-ui-router',
+		'ui-bootstrap': '../bower_components/angular-bootstrap/ui-bootstrap-tpls',
 	},
 	shim: {
 		'angular': {
@@ -9,6 +10,9 @@ require.config({
 		},
 		'ui-router': {
 			'exports': 'ui-router'
+		},
+		'ui-bootstrap': {
+			'exports': 'ui-bootstrap'
 		}
 	}
 });
