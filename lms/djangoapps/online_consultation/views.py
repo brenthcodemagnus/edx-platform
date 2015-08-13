@@ -42,8 +42,15 @@ from xmodule.modulestore.django import modulestore
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.keys import CourseKey
 
+from .serializers import (
+    UserSerializer,
+    UserProfileSerializer
+)
+
 from django.core import serializers
 import json
+
+from student.models import UserProfile
 
 # Create your views here.
 class OnlineConsultationHomeView(View):
@@ -133,11 +140,16 @@ class InstructorListView(APIView):
 
         # Get all instructors of course
         # instructors = CourseAccessRole.objects.filter(role="staff", course_id=course_id).prefetch_related('user')
-        instructors = User.objects.filter(courseaccessrole__role='staff', courseaccessrole__course_id=course_id)
-        
-        serialized_data = serializers.serialize("json", instructors)
+        #instructors = User.objects.filter(courseaccessrole__role='staff', courseaccessrole__course_id=course_id).select_related("user__userprofile").values("username", "email", "first_name", "last_name", "userprofile__name")
+        instructors = User.objects.filter(courseaccessrole__role='staff', courseaccessrole__course_id=course_id).select_related("userprofile").all();
 
-        serialized_json = json.loads(serialized_data)
+        serializer = UserSerializer(instructors, many=True)
+
+        print serializer.fields
         
-        return Response(serialized_json)
+        #serialized_data = serializers.serialize("json", instructors)
+
+        #serialized_json = json.loads(serialized_data)
+        
+        return Response(serializer.data)
 
