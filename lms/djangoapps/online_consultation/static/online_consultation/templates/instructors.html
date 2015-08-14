@@ -7,11 +7,11 @@
             <img ng-src="{{placeholder_url}}" alt="profile pic">
             
             <div class="caption">
-                <h3>{{ins.fields.username}}</h3>
-                <p>Hi I'm {{ins.fields.username}}.</p>
+                <h3>{{ins.profile ? ins.profile.name : ins.username}}</h3>
+                <p>Hi I'm {{ins.username}}.</p>
                 <p>
                 	<a
-                		ng-click="viewSchedules(ins.fields.username)"
+                		ng-click="viewSchedules(ins.username)"
                 		class="btn btn-info"
                 		role="button">
                 		Consult

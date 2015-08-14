@@ -70,7 +70,7 @@ define(['angular','ui-router', 'ui-bootstrap'],function(angular, ui_router, ui_b
 			$scope.usernameExists = function(username){
 				if($scope.instructors){
 					for(var i=0; i<$scope.instructors.length; i++){
-						if($scope.instructors[i]["fields"]["username"]==username){
+						if($scope.instructors[i]["username"]==username){
 							return true;
 						}
 					}
