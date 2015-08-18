@@ -44,13 +44,17 @@ from opaque_keys.edx.keys import CourseKey
 
 from .serializers import (
     UserSerializer,
-    UserProfileSerializer
+    UserProfileSerializer,
+    ConsultationScheduleSerializer,
 )
 
 from django.core import serializers
 import json
 
 from student.models import UserProfile
+
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 # Create your views here.
 class OnlineConsultationHomeView(View):
@@ -153,3 +157,58 @@ class InstructorListView(APIView):
         
         return Response(serializer.data)
 
+class ScheduleView(APIView):
+    """
+        **Use Cases**
+
+            Create a slot for a scheduled online consultation.
+
+        **Example Requests**
+
+            POST /api/consultation/v0/schedules/
+
+        **Response Values for POST**
+
+            If the user is not logged in, a 401 error is returned.
+
+            If the course_id is not given returns a 400 error.
+
+            If the user is not logged in, is not enrolled in the course, or is
+            not course or global staff, returns a 403 error.
+
+            If the course does not exist, returns a 404 error.
+
+            Otherwise, a 201 response is returned containing the following
+            fields:
+
+            *schedule_id: the id of created schedule
+    """
+
+    permission_classes = (permissions.IsAuthenticated,)
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, *args, **kwargs):
+        return super(ScheduleView, self).dispatch(*args, **kwargs)
+
+    def post(self, request):
+        """POST /api/consultation/v0/schedules/"""
+        schedule = request.data
+        
+        serializer = ConsultationScheduleSerializer(data=schedule)
+        print "data is:"
+        print schedule
+
+        if serializer.is_valid():
+            
+            response = json.loads({
+                "message": "the schedule is valid"
+            })
+
+        else:
+
+            response = json.loads({
+                "message": "the schedule is invalid",
+                "errors": serializer.errors
+            })
+
+        return Response(response)
