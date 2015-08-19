@@ -186,29 +186,26 @@ class ScheduleView(APIView):
 
     permission_classes = (permissions.IsAuthenticated,)
 
-    @method_decorator(csrf_exempt)
-    def dispatch(self, *args, **kwargs):
-        return super(ScheduleView, self).dispatch(*args, **kwargs)
-
     def post(self, request):
         """POST /api/consultation/v0/schedules/"""
-        schedule = request.data
+        schedule = request.DATA
         
-        serializer = ConsultationScheduleSerializer(data=schedule)
         print "data is:"
         print schedule
+        
+        serializer = ConsultationScheduleSerializer(data=schedule)
 
         if serializer.is_valid():
             
-            response = json.loads({
+            response = {
                 "message": "the schedule is valid"
-            })
+            }
 
         else:
 
-            response = json.loads({
+            response = {
                 "message": "the schedule is invalid",
                 "errors": serializer.errors
-            })
+            }
 
         return Response(response)
