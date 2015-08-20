@@ -56,6 +56,8 @@ from student.models import UserProfile
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
+from courseware.access import _has_access_to_course
+
 # Create your views here.
 class OnlineConsultationHomeView(View):
     """
@@ -189,18 +191,39 @@ class ScheduleView(APIView):
     def post(self, request):
         """POST /api/consultation/v0/schedules/"""
         schedule = request.DATA
-        
-        print "data is:"
+
         print schedule
+
+        # ensure valid course_key
+        try:
+            course_key = CourseKey.from_string(schedule["course"])
+        except InvalidKeyError:
+            return Response({
+                    "message": "invalid course_id"
+                },status=status.HTTP_404_NOT_FOUND)
         
+        #       ensure user is instructor of course
+        #       then set request.user as instructor of schedule
+        if _has_access_to_course(request.user, "staff", course_key):
+            schedule["instructor"] = request.user.id
+        else:
+            return Response({
+                    "message": "access denied. you are not a staff of this course."
+                },status=status.HTTP_401_UNAUTHORIZED)
+
         serializer = ConsultationScheduleSerializer(data=schedule)
 
+        # if the schedule passes our validation
         if serializer.is_valid():
-            
+
+            schedule = serializer.save()
+
             return Response({
-                "message": "the schedule is valid"
+                "message": "the schedule was validated and saved",
+                "schedule_id": schedule.id
             })
 
+        # if the schedule is not valid return a 400 bad request status
         else:
             return Response({
                 "message": "the schedule is invalid",
