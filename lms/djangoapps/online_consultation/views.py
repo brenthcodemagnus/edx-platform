@@ -197,15 +197,13 @@ class ScheduleView(APIView):
 
         if serializer.is_valid():
             
-            response = {
+            return Response({
                 "message": "the schedule is valid"
-            }
+            })
 
         else:
-
-            response = {
+            return Response({
                 "message": "the schedule is invalid",
                 "errors": serializer.errors
-            }
+            }, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(response)
