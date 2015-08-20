@@ -7,7 +7,7 @@ from xmodule.modulestore.django import modulestore
 # not for existence of course in database
 def validate_course_id(course_id):
     # Ensure valid course_id
-    if course_id_string is None:
+    if course_id is None:
         raise ValidationError('%s should not be None' % course_id)
 
     try:
