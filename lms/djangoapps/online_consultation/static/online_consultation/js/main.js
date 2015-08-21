@@ -9,15 +9,15 @@ require.config({
 			'exports': 'angular'
 		},
 		'ui-router': {
-			'exports': 'ui-router'
+			'deps': ['angular']
 		},
 		'ui-bootstrap': {
-			'exports': 'ui-bootstrap'
+			'deps': ['angular']
 		}
 	}
 });
 
-require(['app_module', 'angular'], function (app_module, angular) {
+require(['angular','app_module'], function (angular, app_module) {
 	
 	'use strict';
 
