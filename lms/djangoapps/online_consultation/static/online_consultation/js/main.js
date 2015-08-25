@@ -8,6 +8,7 @@ require.config({
 		// defined by me
 
 		'instructors-module': './instructors-module',
+		'instructors-schedules-module': './instructors-schedules-module',
 	},
 	shim: {
 		'angular': {
@@ -21,6 +22,9 @@ require.config({
 		},
 		'instructors-module': {
 			'exports': 'instructors-module'
+		},
+		'instructors-schedules-module': {
+			'exports': 'instructors-schedules-module'
 		},
 	}
 });
