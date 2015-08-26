@@ -58,6 +58,7 @@ from django.utils.decorators import method_decorator
 
 from courseware.access import _has_access_to_course
 
+from .models import ConsultationSchedule
 # Create your views here.
 class OnlineConsultationHomeView(View):
     """
@@ -230,3 +231,66 @@ class ScheduleView(APIView):
                 "errors": serializer.errors
             }, status=status.HTTP_400_BAD_REQUEST)
 
+
+class ScheduleListView(GenericAPIView):
+    """
+        **Use Cases**
+
+            Retrieve scheduled consultations for a course given a username
+
+        **Example Requests**
+
+            GET /api/consultation/v0/course-v1:edX+DemoX+Demo_Course/schedules/staff?role={instructor or student}
+
+        **Query Parameters for GET**
+
+            * role: Allowed values are instructor and student. Defaults to instructor.
+
+        **Response Values for GET**
+
+            If the user is not logged in, a 401 error is returned.
+
+            If the user is not logged in, is not enrolled in the course, or is
+            not course or global staff, returns a 403 error.
+
+            If the course does not exist, returns a 404 error.
+
+            If role is instructor, returns all the schedules created by that instructor.
+
+            If role is student, returns all the schedules he is enlisted to.
+            
+            Containing the following fields:
+
+                *schedule_id: the id of created schedule
+    """
+
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self, request, course_id, username):
+        """GET /api/consultation/v0/{course_id}/schedules/{username}"""
+        
+        # ensure valid course_key
+        try:
+            course_key = CourseKey.from_string(course_id)
+
+        except InvalidKeyError:
+            return Response({
+                    "message": "invalid course_id"
+                },status=status.HTTP_400_BAD_REQUEST)
+        # check whether there is a role in query
+        role = request.GET.get('role', 'instructor')
+
+        # assume it is instructor if not provided
+        if role == "instructor":
+            # get schedules created by that instructor for this course
+            schedules = ConsultationSchedule.objects.filter(course=course_key, instructor__username=username)
+
+        elif role == "student":
+            # get schedules he is enlisted to
+            schedules = ConsultationSchedule.objects.filter(course=course_key, student__username=username)
+        # invalid role    
+        else:
+            return Response({
+                    "message": "invalid role. choices are student, instructor"
+                },status=status.HTTP_400_BAD_REQUEST)
+        serializer = ConsultationScheduleSerializer(schedules, many=True)
+        return Response(serializer.data)

@@ -7,7 +7,10 @@ from django.conf.urls import patterns, url
 from .views import (
     InstructorListView,
     ScheduleView,
+    ScheduleListView,
 )
+
+USERNAME_PATTERN = r'(?P<username>[\w.+-]+)'
 
 urlpatterns = patterns(
     '',
@@ -20,5 +23,10 @@ urlpatterns = patterns(
         r'^v0/schedules/$',
         ScheduleView.as_view(),
         name="schedules_list"
+    ),
+    url(
+        r'^v0/{}/schedules/{}$'.format(settings.COURSE_ID_PATTERN, USERNAME_PATTERN),
+        ScheduleListView.as_view(),
+        name="schedules"
     ),
 )
