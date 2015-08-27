@@ -26,10 +26,15 @@ require.config({
 		'instructors-schedules-module': {
 			'exports': 'instructors-schedules-module'
 		},
+	},
+	map: {
+	  '*': {
+	    'css': '../bower_components/require-css/css' // or whatever the path to require-css is
+	  }
 	}
 });
 
-require(['angular','app_module'], function (angular, app_module) {
+require(['angular','app_module', 'css!../bower_components/bootstrap/dist/css/bootstrap.css'], function (angular, app_module, bootstrap) {
 	
 	'use strict';
 
