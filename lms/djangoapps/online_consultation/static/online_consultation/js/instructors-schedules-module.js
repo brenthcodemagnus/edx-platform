@@ -26,7 +26,7 @@ define( dependencies ,function( angular ){
 		};
 	}])
 
-	.controller("InstructorSchedulesController", ["$scope", "$stateParams", "$state", "InstructorSchedulesService", function($scope, $stateParams, $state, InstructorSchedulesService){
+	.controller("InstructorSchedulesController", ["$scope", "$stateParams", "$state", "InstructorSchedulesService", "$log", "uiCalendarConfig", function($scope, $stateParams, $state, InstructorSchedulesService, $log, uiCalendarConfig){
 		
 		var instructorUsername = $stateParams.username;
 		console.log("username is: " + instructorUsername);
@@ -36,18 +36,32 @@ define( dependencies ,function( angular ){
         $scope.availableSchedules = {
              color: '#A1D490',
              textColor: 'white',
-             editable: false,
+             //editable: false,
              events: []
         };
 
         $scope.takenSchedules = {
              color: '#D4A190',
              textColor: 'white',
-             editable: false,
+             //editable: false,
              events: []
         };
 
 		$scope.eventSources = [$scope.availableSchedules];
+
+		$scope.alertEventOnClick = function(date, jsEvent, view){
+			$log.log(date);
+			$scope.changeView("agendaDay");
+		};
+
+		// view event on day view
+		$scope.viewEvent = function(date, jsEvent, view){
+			
+			$log.log(date);
+	        
+	        /* Change View */
+	        $scope.changeView("agendaDay", date);
+		};
 
 		/* config object */
 		$scope.uiConfig = {
@@ -59,11 +73,28 @@ define( dependencies ,function( angular ){
 		            center: 'title',
 		            right: 'today prev,next'
 		        },
-		        dayClick: $scope.alertEventOnClick,
+		        //dayClick: $scope.alertEventOnClick,
+		        eventClick: $scope.viewEvent,
 		        eventDrop: $scope.alertOnDrop,
 		        eventResize: $scope.alertOnResize
 		    }
 		};
+
+        /* Change View */
+        $scope.changeView = function(view, date) {
+        	
+        	var calendar = "mainCalendar";
+
+            uiCalendarConfig.calendars[calendar].fullCalendar('changeView', view);
+
+            // goto date if provided
+            if(date){
+            	$log.log("gotoDate:");
+            	$log.log(date)
+            	$log.log(date.start)
+				uiCalendarConfig.calendars[calendar].fullCalendar('gotoDate', date.start);
+            }
+        };
 
 		$scope.mapSchedulesToCalendar = function(schedules){
 			var schedule,
