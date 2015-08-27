@@ -15,5 +15,6 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ("username", "email", "first_name", "last_name", "profile")
 
 class ConsultationScheduleSerializer(serializers.ModelSerializer):
+	instructor = serializers.IntegerField(required=False)
 	class Meta:
 		model = ConsultationSchedule

@@ -192,8 +192,14 @@ class ScheduleView(APIView):
     def post(self, request):
         """POST /api/consultation/v0/schedules/"""
         schedule = request.DATA
+        serializer = ConsultationScheduleSerializer(data=schedule)
 
-        print schedule
+        # ensure valid schedule
+        if not serializer.is_valid():
+            return Response({
+                "message": "the schedule is invalid",
+                "errors": serializer.errors
+            }, status=status.HTTP_400_BAD_REQUEST)
 
         # ensure valid course_key
         try:
@@ -206,30 +212,18 @@ class ScheduleView(APIView):
         #       ensure user is instructor of course
         #       then set request.user as instructor of schedule
         if _has_access_to_course(request.user, "staff", course_key):
-            schedule["instructor"] = request.user.id
+            serializer.object.instructor = request.user
+            schedule = serializer.save()
+            
+            return Response({
+                "message": "the schedule was validated and saved",
+                "schedule_id": schedule.id
+            })
         else:
             return Response({
                     "message": "access denied. you are not a staff of this course."
                 },status=status.HTTP_401_UNAUTHORIZED)
 
-        serializer = ConsultationScheduleSerializer(data=schedule)
-
-        # if the schedule passes our validation
-        if serializer.is_valid():
-
-            schedule = serializer.save()
-
-            return Response({
-                "message": "the schedule was validated and saved",
-                "schedule_id": schedule.id
-            })
-
-        # if the schedule is not valid return a 400 bad request status
-        else:
-            return Response({
-                "message": "the schedule is invalid",
-                "errors": serializer.errors
-            }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ScheduleListView(GenericAPIView):
