@@ -80,7 +80,8 @@ define( dependencies ,function( angular ){
 				var formattedSchedule = {
 					//title: "Schedule " + (i+1),
 					start: local_start_date,
-					end: local_end_date
+					end: local_end_date,
+					stick: true
 				};
 
 				// if schedules is available, add to availableSchedules events
