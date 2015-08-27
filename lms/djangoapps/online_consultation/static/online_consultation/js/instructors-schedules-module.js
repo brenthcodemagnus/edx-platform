@@ -36,14 +36,14 @@ define( dependencies ,function( angular ){
         $scope.availableSchedules = {
              color: '#A1D490',
              textColor: 'white',
-             //editable: false,
+             editable: false,
              events: []
         };
 
         $scope.takenSchedules = {
              color: '#D4A190',
              textColor: 'white',
-             //editable: false,
+             editable: false,
              events: []
         };
 
