@@ -30,8 +30,10 @@ define( dependencies ,function( angular ){
 		
 		var instructorUsername = $stateParams.username;
 		console.log("username is: " + instructorUsername);
+		
+		$scope.events = [];
 
-		$scope.eventSources = [];
+		$scope.eventSources = [$scope.events];
 
 		/* config object */
 		$scope.uiConfig = {
@@ -48,14 +50,40 @@ define( dependencies ,function( angular ){
 		        eventResize: $scope.alertOnResize
 		    }
 		};
-		
+
+		$scope.mapSchedulesToCalendar = function(schedules){
+			var schedule,
+				local_start_date,
+				local_end_date;
+
+			for(var i=0; i<schedules.length; i++){
+				
+				schedule = schedules[i];
+
+				local_start_date = new Date(schedule['start_date']);
+				local_end_date = new Date(schedule['end_date']);
+
+				var formattedSchedule = {
+					title: "Schedule " + (i+1),
+					start: local_start_date,
+					end: local_end_date
+				};
+
+				$scope.events.push(formattedSchedule);
+
+			};
+		};
+
 		$scope.getSchedules = function(username){
 			InstructorSchedulesService
 				.getInstructorSchedules(username)
 				.then(
 					function(response){
 						console.log(response);
+						
 						$scope.schedules = response.data;
+
+						$scope.mapSchedulesToCalendar($scope.schedules);
 					},
 					function(error){
 						alert("Cannot fetch schedules");
