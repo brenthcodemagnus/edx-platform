@@ -1,7 +1,16 @@
 'use strict';
-define(['angular', 'ui-bootstrap'],function( angular, ui_bootstrap){
+var dependencies = [
+	'angular',
+	'ui-bootstrap',
+	'jquery',
+	'moment',
+	'ui-calendar',
+	'full-calendar'
+];
+
+define( dependencies ,function( angular ){
 	
-	angular.module("instructors-schedules-module", ['ui.bootstrap'])
+	angular.module("instructors-schedules-module", ['ui.bootstrap', 'ui.calendar'])
 
 	.service("InstructorSchedulesService", ["$http", "$q", function($http, $q){
 		// this function gets schedules created by
@@ -20,9 +29,26 @@ define(['angular', 'ui-bootstrap'],function( angular, ui_bootstrap){
 	.controller("InstructorSchedulesController", ["$scope", "$stateParams", "$state", "InstructorSchedulesService", function($scope, $stateParams, $state, InstructorSchedulesService){
 		
 		var instructorUsername = $stateParams.username;
-		
 		console.log("username is: " + instructorUsername);
 
+		$scope.eventSources = [];
+
+		/* config object */
+		$scope.uiConfig = {
+		    calendar:{
+		        height: 450,
+		        editable: true,
+		        header:{
+		            left: 'month basicWeek basicDay agendaWeek agendaDay',
+		            center: 'title',
+		            right: 'today prev,next'
+		        },
+		        dayClick: $scope.alertEventOnClick,
+		        eventDrop: $scope.alertOnDrop,
+		        eventResize: $scope.alertOnResize
+		    }
+		};
+		
 		$scope.getSchedules = function(username){
 			InstructorSchedulesService
 				.getInstructorSchedules(username)

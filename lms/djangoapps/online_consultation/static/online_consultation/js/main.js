@@ -5,10 +5,17 @@ require.config({
 		'ui-router': '../bower_components/angular-ui-router/release/angular-ui-router',
 		'ui-bootstrap': '../bower_components/angular-bootstrap/ui-bootstrap-tpls',
 
+		// for angular-ui-calendar
+		'jquery': '../bower_components/jquery/dist/jquery.min',
+		'moment': '../bower_components/moment/min/moment.min',
+		'ui-calendar': '../bower_components/angular-ui-calendar/src/calendar',
+		'full-calendar': '../bower_components/fullcalendar/dist/fullcalendar.min',
+		
 		// defined by me
 
 		'instructors-module': './instructors-module',
 		'instructors-schedules-module': './instructors-schedules-module',
+
 	},
 	shim: {
 		'angular': {
@@ -26,6 +33,9 @@ require.config({
 		'instructors-schedules-module': {
 			'exports': 'instructors-schedules-module'
 		},
+		'ui-calendar': {
+			'deps': ['angular']
+		},
 	},
 	map: {
 	  '*': {
@@ -34,7 +44,14 @@ require.config({
 	}
 });
 
-require(['angular','app_module', 'css!../bower_components/bootstrap/dist/css/bootstrap.css'], function (angular, app_module, bootstrap) {
+var dependencies = [
+	'angular',
+	'app_module',
+	'css!../bower_components/bootstrap/dist/css/bootstrap.css',
+	'css!../bower_components/fullcalendar/dist/fullcalendar.css'
+]
+
+require( dependencies , function (angular, app_module, bootstrap) {
 	
 	'use strict';
 

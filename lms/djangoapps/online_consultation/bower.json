@@ -17,6 +17,7 @@
     "requirejs": "~2.1.20",
     "angular-ui-router": "~0.2.15",
     "angular-bootstrap": "~0.13.3",
-    "require-css": "~0.1.8"
+    "require-css": "~0.1.8",
+    "angular-ui-calendar": "~1.0.1"
   }
 }
