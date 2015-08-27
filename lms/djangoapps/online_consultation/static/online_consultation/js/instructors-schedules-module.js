@@ -33,7 +33,21 @@ define( dependencies ,function( angular ){
 		
 		$scope.events = [];
 
-		$scope.eventSources = [$scope.events];
+        $scope.availableSchedules = {
+             color: '#A1D490',
+             textColor: 'white',
+             //editable: false,
+             events: []
+        };
+
+        $scope.takenSchedules = {
+             color: '#D4A190',
+             textColor: 'white',
+             //editable: false,
+             events: []
+        };
+
+		$scope.eventSources = [$scope.availableSchedules];
 
 		/* config object */
 		$scope.uiConfig = {
@@ -64,13 +78,19 @@ define( dependencies ,function( angular ){
 				local_end_date = new Date(schedule['end_date']);
 
 				var formattedSchedule = {
-					title: "Schedule " + (i+1),
+					//title: "Schedule " + (i+1),
 					start: local_start_date,
 					end: local_end_date
 				};
 
-				$scope.events.push(formattedSchedule);
-
+				// if schedules is available, add to availableSchedules events
+				if(!schedule.student){
+					//available
+					$scope.availableSchedules.events.push(formattedSchedule);
+				}
+				else{
+					$scope.takenSchedules.events.push(formattedSchedule);	
+				}
 			};
 		};
 
