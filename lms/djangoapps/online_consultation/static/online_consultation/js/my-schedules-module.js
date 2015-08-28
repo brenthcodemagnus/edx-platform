@@ -15,11 +15,21 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 	.service("MySchedulesService", ["$http", "$q", function($http, $q){
 
 		var urls = {
-			INSTRUCTOR_SCHEDULES: "http://" + config.BASE_URL + "/api/consultation/v0/"+config.COURSE_ID+"/schedules"
+			INSTRUCTOR_SCHEDULES: "http://" + config.BASE_URL + "/api/consultation/v0/"+config.COURSE_ID+"/schedules",
+			POST_SCHEDULES: "http://" + config.BASE_URL + "/api/consultation/v0/schedules/"
 		};
 
 		this.getMySchedules = function(username, role){
 			return $http.get(urls.INSTRUCTOR_SCHEDULES + "/" + username + "?role=" + role);
+		};
+
+		this.submitSchedule = function(schedule){
+			// I need the course
+			var course_id = config.COURSE_ID;
+
+			schedule["course"] = course_id;
+
+			return $http.post(urls.POST_SCHEDULES, schedule);
 		};
 	}])
 
@@ -166,6 +176,31 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 			$scope.changeView("month");
 		};
 
+		$scope.submitSchedule = function(){
+			console.log("Schedule to be submitted: ");
+			console.log($scope.newSchedule);
+			console.log("From " + $scope.newSchedule.start.toISOString());
+			console.log("To " + $scope.newSchedule.end.toISOString());
+			
+			var formattedData = {
+				start_date: $scope.newSchedule.start.toISOString(),
+				end_date: $scope.newSchedule.end.toISOString()
+			};
+
+			// MySchedulesService
+			// 	.submitSchedule(formattedData)
+			// 	.then(
+			// 		function(response){
+			// 			console.log(response);
+			// 			alert("Success!!! schedule submitted.")
+			// 		},
+			// 		function(error){
+			// 			console.log(error)
+			// 			alert("Cannot submit schedule");
+			// 		}
+			// 	);
+
+		};
 
         /* add custom event*/
         $scope.createSchedule = function() {

@@ -40,6 +40,12 @@ define(['angular','ui-router', 'ui-bootstrap', 'instructors-module', 'instructor
 		            controller: "MySchedulesController"
 		        })
 		})
+
+		.config(['$httpProvider', function($httpProvider) {
+			var csrfToken = _getCSRFToken();
+
+		    $httpProvider.defaults.headers.common['X-CSRFToken'] = csrfToken;
+		}])
 		
 		.controller("MainController", ["$scope", function($scope){
 			$scope.title = "This is the title";
