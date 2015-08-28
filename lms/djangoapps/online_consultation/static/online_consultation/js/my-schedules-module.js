@@ -101,15 +101,19 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 		};
 
         $scope.alertEvent = function (event, jsEvent, ui, view) {
+        	// event is the event/schedule in fullCalendar world
+        	// of which changes are not propagated to the scope
             $timeout(function() {
+            	// this is our reference to scope event/schedule
                 var sEvent =  findCalendarEvent(event); //$scope.newSchedule;
-                sEvent.start = event.start.toDate();
-                sEvent.end = event.end.toDate();
+                sEvent.start = event.start;
+                sEvent.end = event.end;
                 // by making this dirty we tell uiCalendar to not send updates
                 // to fullCalendar.
                 sEvent.isDirty = true;
                 console.log("sEvent is: ");
-            	console.log(sEvent);
+            	console.log("From " + sEvent.start.toString());
+            	console.log("To " + sEvent.end.toString());
             });
         };
 
@@ -187,18 +191,18 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 				end_date: $scope.newSchedule.end.toISOString()
 			};
 
-			// MySchedulesService
-			// 	.submitSchedule(formattedData)
-			// 	.then(
-			// 		function(response){
-			// 			console.log(response);
-			// 			alert("Success!!! schedule submitted.")
-			// 		},
-			// 		function(error){
-			// 			console.log(error)
-			// 			alert("Cannot submit schedule");
-			// 		}
-			// 	);
+			MySchedulesService
+				.submitSchedule(formattedData)
+				.then(
+					function(response){
+						console.log(response);
+						alert("Success!!! schedule submitted.")
+					},
+					function(error){
+						console.log(error)
+						alert("Cannot submit schedule");
+					}
+				);
 
 		};
 
@@ -223,9 +227,14 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 
             	end_date = moment(date).add(defaultTimeSpan, "hours");
 
+            console.log("The schedule to be created: ");
+            console.log("From " + start_date.toString());
+            console.log("To " + end_date.toString());
+            
+
             $scope.newSchedule = {
-            	start: start_date,
-            	end: end_date,
+            	start: start_date.toDate(),
+            	end: end_date.toDate(),
             	stick: true
             }
 
