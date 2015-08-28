@@ -15,6 +15,7 @@ require.config({
 
 		'instructors-module': './instructors-module',
 		'instructors-schedules-module': './instructors-schedules-module',
+		'my-schedules-module': './my-schedules-module',
 
 	},
 	shim: {
@@ -32,6 +33,9 @@ require.config({
 		},
 		'instructors-schedules-module': {
 			'exports': 'instructors-schedules-module'
+		},
+		'my-schedules-module': {
+			'exports': 'my-schedules-module'
 		},
 		'ui-calendar': {
 			'deps': ['angular']

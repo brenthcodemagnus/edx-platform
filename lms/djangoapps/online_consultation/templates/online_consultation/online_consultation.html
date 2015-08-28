@@ -26,8 +26,24 @@
 
     }
 
-    console.log("csrf_token is: " + "${csrf_token}")
+    function getRole(){
+    	if ("${instructor}" == "True"){
+    		return "instructor";
+    	}
+    	else{
+    		return "student";
+    	}
+    }
 
+    function _getUser(){
+    	return {
+    		username: "${request.user.username}",
+    		role: getRole()
+    	}
+    }
+
+    console.log("csrf_token is: " + "${csrf_token}")
+    console.log("instructor is:" + "${instructor}");
 </script>
 
 <div id="consultation-main">
@@ -48,10 +64,8 @@
 					</li>
 					<li class="pull-right" ui-sref-active="active" role="presentation">
 						
-						<a ui-sref="mySchedules" ui-sref-opts="{reload: true}">My Schedules</a>
+						<a ui-sref="mySchedules">My Schedules</a>
 					</li>
-					
-
 				</ul>
 				<hr>
 				<div ui-view></div>

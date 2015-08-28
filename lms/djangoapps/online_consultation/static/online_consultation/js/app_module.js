@@ -1,11 +1,12 @@
 'use strict';
-define(['angular','ui-router', 'ui-bootstrap', 'instructors-module', 'instructors-schedules-module' ],function(angular, ui_router, ui_bootstrap){
+define(['angular','ui-router', 'ui-bootstrap', 'instructors-module', 'instructors-schedules-module', 'my-schedules-module' ],function(angular, ui_router, ui_bootstrap){
 
 	var dependencies = [
 		'ui.router',
 		'ui.bootstrap',
 		'instructors-module',
-		'instructors-schedules-module'
+		'instructors-schedules-module',
+		'my-schedules-module'
 	]
 
 	angular
@@ -32,6 +33,11 @@ define(['angular','ui-router', 'ui-bootstrap', 'instructors-module', 'instructor
 		            url: "/:username/schedules",
 		            templateUrl: staticUrl("templates/instructor_schedules.html"),
 		            controller: "InstructorSchedulesController"
+		        })
+		        .state('mySchedules', {
+		            url: "/myschedules",
+		            templateUrl: staticUrl("templates/my_schedules.html"),
+		            controller: "MySchedulesController"
 		        })
 		})
 		

@@ -79,8 +79,16 @@ class OnlineConsultationHomeView(View):
                 not has_access(request.user, 'staff', course, course.id):
             raise Http404
 
+        is_instructor =  _has_access_to_course(request.user, "staff", course_key)
+
+        if is_instructor:
+            instructor = True
+        else:
+            instructor = False
+
         context = {
             "course": course,
+            "instructor": instructor
         }
 
         return render_to_response("online_consultation/online_consultation.html", context)
