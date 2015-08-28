@@ -8,7 +8,7 @@ var dependencies = [
 	'full-calendar'
 ];
 
-define( dependencies ,function( angular ){
+define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar, fullCalendar ){
 	
 	angular.module("my-schedules-module", ['ui.bootstrap', 'ui.calendar'])
 
@@ -23,35 +23,91 @@ define( dependencies ,function( angular ){
 		};
 	}])
 
-	.controller("MySchedulesController", ["$scope", "$stateParams", "$state", "MySchedulesService", "$log", "uiCalendarConfig", function($scope, $stateParams, $state, MySchedulesService, $log, uiCalendarConfig){
+	.controller("MySchedulesController", ["$scope", "$stateParams", "$state", "MySchedulesService", "$log", "uiCalendarConfig", "$timeout", function($scope, $stateParams, $state, MySchedulesService, $log, uiCalendarConfig, $timeout){
 		
 		var user = _getUser();
 
 		console.log("role is:" + user.role);
 		console.log("username is:" + user.username);
-				
+
+		$scope.states = {
+			initial: {
+				createButtonLabel: "Create schedule",
+				createButtonClass: "btn btn-lg btn-success",
+				createButtonVisible: true,
+				createButtonEnabled: true,
+
+				cancelButtonLabel: "Cancel",
+				cancelButtonClass: "btn btn-danger",
+				cancelButtonVisible: false,
+				cancelButtonEnabled: true
+			},
+
+			changing: {
+				createButtonLabel: "Submit",
+				createButtonClass: "btn btn-primary",
+				createButtonVisible: true,
+				createButtonEnabled: true,
+
+				cancelButtonLabel: "Cancel",
+				cancelButtonClass: "btn btn-danger",
+				cancelButtonVisible: true,
+				cancelButtonEnabled: true
+			},
+
+			submitting: {
+				createButtonLabel: "Submitting...",
+				createButtonClass: "btn btn-warning",
+				createButtonVisible: true,
+				createButtonEnabled: false,
+
+				cancelButtonLabel: "Cancel",
+				cancelButtonClass: "btn btn-danger",
+				cancelButtonVisible: true,
+				cancelButtonEnabled: false
+			}
+
+		};
+
+		$scope.state = $scope.states['initial'];
+
+		$scope.setState = function(state){
+			$scope.state = $scope.states[state]
+		};
 
 		$scope.events = [];
+
+        $scope.newSchedules = {
+             color: '#D4D290',
+             textColor: 'white',
+             editable: true,
+             events: []
+        };
 
         $scope.availableSchedules = {
              color: '#A1D490',
              textColor: 'white',
-             //editable: false,
+             editable: false,
              events: []
         };
 
         $scope.takenSchedules = {
              color: '#D4A190',
              textColor: 'white',
-             //editable: false,
+             editable: false,
              events: []
         };
 
-		$scope.eventSources = [$scope.availableSchedules];
+		$scope.eventSources = [$scope.availableSchedules, $scope.takenSchedules, $scope.newSchedules];
 
 		$scope.alertEventOnClick = function(date, jsEvent, view){
 			$log.log(date);
 			$scope.changeView("agendaDay");
+		};
+
+		$scope.alertOnDrop = function(date, jsEvent, view){
+			console.log("alertOnDrop event triggered");
+			$log.log(date);
 		};
 
 		// view event on day view
@@ -62,6 +118,45 @@ define( dependencies ,function( angular ){
 	        /* Change View */
 	        $scope.changeView("agendaDay", date);
 		};
+
+        $scope.alertEvent = function (event, jsEvent, ui, view) {
+            $timeout(function() {
+                var sEvent =  findCalendarEvent(event); //$scope.newSchedule;
+                sEvent.start = event.start.toDate();
+                sEvent.end = event.end.toDate();
+                // by making this dirty we tell uiCalendar to not send updates
+                // to fullCalendar.
+                sEvent.isDirty = true;
+                console.log("sEvent is: ");
+            	console.log(sEvent);
+            });
+        };
+
+        function findCalendarEvent(event) {
+            console.log("$scope.eventSources.length = " + $scope.eventSources.length);
+            
+            // iterate through all eventSources
+            for (var i = 0;i < $scope.eventSources.length;i++){
+
+            		// object containing an array of events
+            		var eventSource = $scope.eventSources[i];
+            		
+            		// array containing events
+            		var eventsArray = eventSource.events;
+
+                    for(var x = 0; x < eventsArray.length; x++){
+
+                    		var currentEvent = eventsArray [x];
+                    		console.log("current event is: ")
+                    		console.log(currentEvent);
+                    		console.log("event._id: " + event._id);
+                            if (currentEvent._id === event._id) {
+                                    return currentEvent;
+                            }
+                    }
+            }
+                
+        };
 
 		/* config object */
 		$scope.uiConfig = {
@@ -75,10 +170,41 @@ define( dependencies ,function( angular ){
 		        },
 		        //dayClick: $scope.alertEventOnClick,
 		        eventClick: $scope.viewEvent,
-		        eventDrop: $scope.alertOnDrop,
-		        eventResize: $scope.alertOnResize
+		        eventDragStop: $scope.alertEvent,
+		        eventResizeStop: $scope.alertEvent
 		    }
 		};
+
+		$scope.newSchedule = null;
+
+        /* add custom event*/
+        $scope.createSchedule = function() {
+
+        	// make the state to changing
+        	$scope.setState("changing");
+
+        	// add arbitrary event
+            // get date today
+            var date = new Date();
+            //set hours to 9:00 am
+            date.setHours(9);
+            date.setMinutes(0);
+            date.setSeconds(0);
+
+            var start_date = moment(date),
+            	
+            // make the default time span to 1 hour
+            	defaultTimeSpan = 1, //in hours
+
+            	end_date = moment(date).add(defaultTimeSpan, "hours");
+
+            $scope.newSchedule = {
+            	start: start_date,
+            	end: end_date
+            }
+
+            $scope.newSchedules.events.push($scope.newSchedule);
+        };
 
         /* Change View */
         $scope.changeView = function(view, date) {

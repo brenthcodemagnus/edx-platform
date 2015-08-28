@@ -8,7 +8,8 @@ require.config({
 		// for angular-ui-calendar
 		'jquery': '../bower_components/jquery/dist/jquery.min',
 		'moment': '../bower_components/moment/min/moment.min',
-		'ui-calendar': '../bower_components/angular-ui-calendar/src/calendar',
+		//'ui-calendar': '../bower_components/angular-ui-calendar/src/calendar',
+		'ui-calendar': './calendar_hacked',
 		'full-calendar': '../bower_components/fullcalendar/dist/fullcalendar.min',
 		
 		// defined by me
