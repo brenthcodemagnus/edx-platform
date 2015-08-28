@@ -147,6 +147,25 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 		};
 
 		$scope.newSchedule = null;
+		var newScheduleIndex = null;
+
+        /* remove schedule */
+        var removeSchedule = function(index) {
+            $scope.newSchedules.events.splice(index,1);
+        };
+
+		// this function cancels the creation of schedule
+		// deletes the schedule from array and from view
+		// changes view back to month view if it isn't there
+		$scope.cancelSchedule = function(){
+			
+			removeSchedule(newScheduleIndex);
+
+			$scope.setState("initial");
+
+			$scope.changeView("month");
+		};
+
 
         /* add custom event*/
         $scope.createSchedule = function() {
@@ -174,7 +193,7 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
             	end: end_date
             }
 
-            $scope.newSchedules.events.push($scope.newSchedule);
+            newScheduleIndex = $scope.newSchedules.events.push($scope.newSchedule) - 1;
         };
 
         /* Change View */
