@@ -1,18 +1,31 @@
 <p class="text-center">
-	<a
-		ng-class="state.cancelButtonClass"
-		ng-disabled="!state.cancelButtonEnabled"
-		ng-show="state.cancelButtonVisible"
-		>
-		{{state.cancelButtonLabel}}
-	</a>
-	<a
-		ng-class="state.createButtonClass"
-		ng-disabled="!state.createButtonEnabled"
-		ng-show="state.createButtonVisible"
-		ng-click="createSchedule()"
-		>
-		{{state.createButtonLabel}}
-	</a>
+
+	<span ng-switch="state">
+
+		<span ng-switch-when="initial">
+
+			<a
+				class="btn btn-success btn-lg"
+				ng-click="createSchedule()"
+				>
+				Create schedule
+			</a>
+		</span>
+
+		<span ng-switch-when="changing">
+			<a
+				class="btn btn-danger"
+				ng-click="cancelSchedule()"
+				>
+				Cancel
+			</a>
+			<a
+				class="btn btn-primary"
+				ng-click="submitSchedule()"
+				>
+				Submit schedule
+			</a>
+		</span>
+	</span>
 </p>
 <div ui-calendar="uiConfig.calendar" ng-model="eventSources" calendar="mainCalendar"></div>

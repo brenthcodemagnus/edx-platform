@@ -30,49 +30,19 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 		console.log("role is:" + user.role);
 		console.log("username is:" + user.username);
 
-		$scope.states = {
-			initial: {
-				createButtonLabel: "Create schedule",
-				createButtonClass: "btn btn-lg btn-success",
-				createButtonVisible: true,
-				createButtonEnabled: true,
+		$scope.states = ["initial", "changing", "submitting"];
 
-				cancelButtonLabel: "Cancel",
-				cancelButtonClass: "btn btn-danger",
-				cancelButtonVisible: false,
-				cancelButtonEnabled: true
-			},
-
-			changing: {
-				createButtonLabel: "Submit",
-				createButtonClass: "btn btn-primary",
-				createButtonVisible: true,
-				createButtonEnabled: true,
-
-				cancelButtonLabel: "Cancel",
-				cancelButtonClass: "btn btn-danger",
-				cancelButtonVisible: true,
-				cancelButtonEnabled: true
-			},
-
-			submitting: {
-				createButtonLabel: "Submitting...",
-				createButtonClass: "btn btn-warning",
-				createButtonVisible: true,
-				createButtonEnabled: false,
-
-				cancelButtonLabel: "Cancel",
-				cancelButtonClass: "btn btn-danger",
-				cancelButtonVisible: true,
-				cancelButtonEnabled: false
-			}
-
-		};
-
-		$scope.state = $scope.states['initial'];
+		$scope.state = "initial";
 
 		$scope.setState = function(state){
-			$scope.state = $scope.states[state]
+			if($scope.states.indexOf(state) != -1){
+				$scope.state = state;
+			}
+			else{
+				console.error("Invalid state: " + state);
+				console.log("Available states are: ");
+				console.log($scope.states);
+			}
 		};
 
 		$scope.events = [];
@@ -111,6 +81,7 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 		};
 
 		// view event on day view
+		// affected by getView()
 		$scope.viewEvent = function(date, jsEvent, view){
 			
 			$log.log(date);
