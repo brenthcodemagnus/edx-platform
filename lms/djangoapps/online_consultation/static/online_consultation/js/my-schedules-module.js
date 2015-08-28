@@ -190,7 +190,8 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 
             $scope.newSchedule = {
             	start: start_date,
-            	end: end_date
+            	end: end_date,
+            	stick: true
             }
 
             newScheduleIndex = $scope.newSchedules.events.push($scope.newSchedule) - 1;
