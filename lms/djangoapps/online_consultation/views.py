@@ -57,7 +57,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
 from courseware.access import _has_access_to_course
-
+from courseware.courses import get_course_with_access
+from student.models import CourseEnrollment
 from .models import ConsultationSchedule
 # Create your views here.
 class OnlineConsultationHomeView(View):
@@ -296,3 +297,73 @@ class ScheduleListView(GenericAPIView):
                 },status=status.HTTP_400_BAD_REQUEST)
         serializer = ConsultationScheduleSerializer(schedules, many=True)
         return Response(serializer.data)
+
+
+class ScheduleReserveView(APIView):
+    """
+        **Use Cases**
+
+            Reserve a slot for a scheduled online consultation.
+
+        **Example Requests**
+
+            POST /api/consultation/v0/schedules/reserve
+
+        **Response Values for POST**
+
+            If the user is not logged in, a 401 error is returned.
+
+            If the course_id is not given returns a 400 error.
+
+            If the user is not logged in, is not enrolled in the course, or is
+            not course or global staff, returns a 403 error.
+
+            If the course does not exist, returns a 404 error.
+
+            Otherwise, a 201 response is returned.
+    """
+
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, schedule_id):
+        """POST /api/consultation/v0/schedules/reserve"""
+        
+        # get the schedule
+        try:
+            schedule = ConsultationSchedule.objects.get(pk=schedule_id)
+        except ConsultationSchedule.DoesNotExist:
+            return Response({
+                "message": "the schedule/%s doesnt exist." % schedule_id
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        # get the course
+        course = schedule.course
+
+        # ensure valid course_key
+        try:
+            course_key = CourseKey.from_string(course)
+
+        except InvalidKeyError:
+            return Response({
+                    "message": "invalid course_id"
+                },status=status.HTTP_400_BAD_REQUEST)
+        
+        # check if student is enrolled
+        if not CourseEnrollment.is_enrolled(request.user, course_key):
+            return Response({
+                "message": "you are not enrolled in this course"
+            }, status=status.HTTP_401_UNAUTHORIZED)
+
+        # check if available
+        if schedule.is_available():
+            # reserve current user
+            schedule.student = request.user
+            schedule.save()
+
+            return Response({
+                "message": "You have been reserved to this schedule"
+            })
+        else:
+            return Response({
+                "message": "The schedule is already taken"
+            }, status=status.HTTP_404_NOT_FOUND)

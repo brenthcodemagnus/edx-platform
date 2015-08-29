@@ -8,9 +8,11 @@ from .views import (
     InstructorListView,
     ScheduleView,
     ScheduleListView,
+    ScheduleReserveView,
 )
 
 USERNAME_PATTERN = r'(?P<username>[\w.+-]+)'
+SCHEDULE_ID_PATTERN = r'(?P<schedule_id>[a-z\d_-]+)'
 
 urlpatterns = patterns(
     '',
@@ -28,5 +30,10 @@ urlpatterns = patterns(
         r'^v0/{}/schedules/{}$'.format(settings.COURSE_ID_PATTERN, USERNAME_PATTERN),
         ScheduleListView.as_view(),
         name="schedules"
+    ),
+    url(
+        r'^v0/schedules/{}/reserve$'.format(SCHEDULE_ID_PATTERN),
+        ScheduleReserveView.as_view(),
+        name="schedules_reserve"
     ),
 )
