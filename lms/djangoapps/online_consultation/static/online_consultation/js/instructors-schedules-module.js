@@ -18,11 +18,17 @@ define( dependencies ,function( angular ){
 		// for this course
 
 		var urls = {
-			INSTRUCTOR_SCHEDULES: "http://" + config.BASE_URL + "/api/consultation/v0/"+config.COURSE_ID+"/schedules"
+			INSTRUCTOR_SCHEDULES: "http://" + config.BASE_URL + "/api/consultation/v0/"+config.COURSE_ID+"/schedules",
+			API_URL: "http://" + config.BASE_URL + "/api/consultation/v0"
 		};
 
 		this.getInstructorSchedules = function(username){
 			return $http.get(urls.INSTRUCTOR_SCHEDULES + "/" + username);
+		};
+
+		this.reserveSchedule = function(schedule_id){
+			var url = urls.API_URL + "/schedules/" + schedule_id + "/reserve";
+			return $http.post(url);
 		};
 	}])
 
@@ -54,13 +60,31 @@ define( dependencies ,function( angular ){
 			$scope.changeView("agendaDay");
 		};
 
-		// view event on day view
-		$scope.viewEvent = function(date, jsEvent, view){
+		// reserveSchedule
+		$scope.reserveSchedule = function(schedule, jsEvent, view){
 			
-			$log.log(date);
+			console.log("schedule is: ");
+			console.log(schedule);
 	        
-	        /* Change View */
-	        $scope.changeView("agendaDay", date);
+			var response = confirm("Do you want to reserve to this schedule?");
+			var schedule_id = schedule.schedule_id;
+
+			if(response){
+				//reserve the student for this course
+				InstructorSchedulesService
+					.reserveSchedule(schedule_id)
+					.then(
+						function(response){
+							console.log(response);
+							alert("Reservation successful");
+						},
+						function(error){
+							console.log(error)
+							alert("Reservation failed");
+						}
+					);
+			}
+	        //$scope.changeView("agendaDay", date);
 		};
 
 		/* config object */
@@ -74,7 +98,7 @@ define( dependencies ,function( angular ){
 		            right: 'today prev,next'
 		        },
 		        //dayClick: $scope.alertEventOnClick,
-		        eventClick: $scope.viewEvent,
+		        eventClick: $scope.reserveSchedule,
 		        eventDrop: $scope.alertOnDrop,
 		        eventResize: $scope.alertOnResize
 		    }
@@ -110,6 +134,7 @@ define( dependencies ,function( angular ){
 
 				var formattedSchedule = {
 					//title: "Schedule " + (i+1),
+					schedule_id: schedule.id,
 					start: local_start_date,
 					end: local_end_date,
 					stick: true
