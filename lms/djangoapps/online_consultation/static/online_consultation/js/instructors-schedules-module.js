@@ -53,7 +53,7 @@ define( dependencies ,function( angular ){
              events: []
         };
 
-		$scope.eventSources = [$scope.availableSchedules];
+		$scope.eventSources = [$scope.availableSchedules, $scope.takenSchedules];
 
 		$scope.alertEventOnClick = function(date, jsEvent, view){
 			$log.log(date);
