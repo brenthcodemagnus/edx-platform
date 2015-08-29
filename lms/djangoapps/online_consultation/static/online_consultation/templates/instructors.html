@@ -10,12 +10,24 @@
                 <h3>{{ins.profile ? ins.profile.name : ins.username}}</h3>
                 <p>Hi I'm {{ins.username}}.</p>
                 <p>
-                	<a
-                		ng-click="viewSchedules(ins.username)"
-                		class="btn btn-info"
-                		role="button">
-                		Consult
-                	</a>
+                    <span ng-switch="state">
+                        <span ng-switch-when="initial">
+                        	<a
+                        		ng-click="viewSchedules(ins.username)"
+                        		class="btn btn-info"
+                        		role="button">
+                        		Consult
+                        	</a>
+                        </span>
+                        <span ng-switch-when="schedules">
+                            <a
+                                ng-click="back()"
+                                class="btn btn-danger"
+                                role="button">
+                                Back
+                            </a>
+                        </span>
+                    </span>
                 	<a
                 		class="btn btn-default"
                 		role="button">

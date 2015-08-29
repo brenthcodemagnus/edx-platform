@@ -33,6 +33,19 @@ define(['angular', 'ui-bootstrap'],function( angular, ui_bootstrap){
 				);
 		};
 
+		// either initial or schedules
+		$scope.state = "initial";
+
+		$scope.setSate = function(state){
+			$scope.state = state;
+		};
+
+		$scope.back = function(){
+			$state.go("instructors");
+			$scope.refresh();
+			$scope.setSate("initial");
+		};
+
 		$scope.usernameFilter = "";
 
 		$scope.filterByUsername = function(username){
@@ -60,6 +73,7 @@ define(['angular', 'ui-bootstrap'],function( angular, ui_bootstrap){
 		};
 
 		$scope.viewSchedules = function(username){
+			$scope.setSate("schedules");
 			$scope.filterByUsername(username);
 			$state.go("instructors.schedules", {username:username});
 		};

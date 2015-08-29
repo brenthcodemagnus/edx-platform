@@ -169,10 +169,10 @@ define( dependencies ,function( angular ){
 				);
 		};
 
-		$scope.back = function(){
-			$scope.refresh();
-			$state.go("instructors");
-		};
+		// $scope.back = function(){
+		// 	$scope.refresh();
+		// 	$state.go("instructors");
+		// };
 
 		$scope.noSchedules = function(){
 			return $scope.schedules && $scope.schedules.length == 0;
