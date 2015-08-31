@@ -1,12 +1,13 @@
 'use strict';
-define(['angular','ui-router', 'ui-bootstrap', 'instructors-module', 'instructors-schedules-module', 'my-schedules-module' ],function(angular, ui_router, ui_bootstrap){
+define(['angular','ui-router', 'ui-bootstrap', 'instructors-module', 'instructors-schedules-module', 'my-schedules-module', 'chat-module' ],function(angular, ui_router, ui_bootstrap){
 
 	var dependencies = [
 		'ui.router',
 		'ui.bootstrap',
 		'instructors-module',
 		'instructors-schedules-module',
-		'my-schedules-module'
+		'my-schedules-module',
+		'chat-module',
 	]
 
 	angular
@@ -38,6 +39,11 @@ define(['angular','ui-router', 'ui-bootstrap', 'instructors-module', 'instructor
 		            url: "/myschedules",
 		            templateUrl: staticUrl("templates/my_schedules.html"),
 		            controller: "MySchedulesController"
+		        })
+		        .state('chat', {
+		            url: "/chat?session_id",
+		            templateUrl: staticUrl("templates/chat.html"),
+		            controller: "ChatController"
 		        })
 		})
 

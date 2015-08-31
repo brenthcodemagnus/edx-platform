@@ -17,6 +17,7 @@ require.config({
 		'instructors-module': './instructors-module',
 		'instructors-schedules-module': './instructors-schedules-module',
 		'my-schedules-module': './my-schedules-module',
+		'chat-module': './chat-module',
 
 	},
 	shim: {
