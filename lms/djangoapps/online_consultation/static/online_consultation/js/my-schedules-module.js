@@ -100,7 +100,15 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 	        $scope.changeView("agendaDay", date);
 		};
 
+		// this becomes true if time was changed
+		$scope.needsAdjustment = false;
+
         $scope.alertEvent = function (event, jsEvent, ui, view) {
+        	$scope.needsAdjustment = true;
+
+        	console.log("event is: ");
+        	console.log("From " + event.start.toString());
+        	console.log("To " + event.end.toString())
         	// event is the event/schedule in fullCalendar world
         	// of which changes are not propagated to the scope
             $timeout(function() {
@@ -118,29 +126,25 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
         };
 
         function findCalendarEvent(event) {
-            console.log("$scope.eventSources.length = " + $scope.eventSources.length);
             
             // iterate through all eventSources
             for (var i = 0;i < $scope.eventSources.length;i++){
 
-            		// object containing an array of events
-            		var eventSource = $scope.eventSources[i];
+        		// object containing an array of events
+        		var eventSource = $scope.eventSources[i];
+        		
+        		// array containing events
+        		var eventsArray = eventSource.events;
+
+                for(var x = 0; x < eventsArray.length; x++){
+
+            		var currentEvent = eventsArray [x];
             		
-            		// array containing events
-            		var eventsArray = eventSource.events;
-
-                    for(var x = 0; x < eventsArray.length; x++){
-
-                    		var currentEvent = eventsArray [x];
-                    		console.log("current event is: ")
-                    		console.log(currentEvent);
-                    		console.log("event._id: " + event._id);
-                            if (currentEvent._id === event._id) {
-                                    return currentEvent;
-                            }
+                    if (currentEvent._id === event._id) {
+                            return currentEvent;
                     }
+                }
             }
-                
         };
 
 		/* config object */
@@ -180,16 +184,32 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 			$scope.changeView("month");
 		};
 
+		function adjustTime(dateObj){
+			return new Date(Date.parse(dateObj.toISOString()) - (moment().utcOffset() * 60)*1000).toISOString();
+		};
+
 		$scope.submitSchedule = function(){
-			console.log("Schedule to be submitted: ");
-			console.log($scope.newSchedule);
-			console.log("From " + $scope.newSchedule.start.toISOString());
-			console.log("To " + $scope.newSchedule.end.toISOString());
 			
-			var formattedData = {
-				start_date: $scope.newSchedule.start.toISOString(),
-				end_date: $scope.newSchedule.end.toISOString()
-			};
+			var schedule = $scope.newSchedule;
+
+			var formattedData;
+
+			if($scope.needsAdjustment){
+				console.log("needs adjustment");
+				formattedData = {
+					start_date: adjustTime(schedule.start),
+					end_date: adjustTime(schedule.end)
+				};
+			}
+			else{
+				console.log("doesn't need adjustment");
+				formattedData = {
+					start_date: schedule.start.toISOString(),
+					end_date: schedule.end.toISOString()
+				};
+			}
+
+			console.log(formattedData);
 
 			MySchedulesService
 				.submitSchedule(formattedData)
@@ -233,8 +253,8 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
             
 
             $scope.newSchedule = {
-            	start: start_date.toDate(),
-            	end: end_date.toDate(),
+            	start: start_date,
+            	end: end_date,
             	stick: true
             }
 
