@@ -1,5 +1,5 @@
 """HTTP endpoints for the Online consultation API."""
-
+from opentok import OpenTok
 from django.shortcuts import render_to_response
 from courseware.courses import get_course_with_access, has_access
 from django.http import Http404
@@ -367,3 +367,98 @@ class ScheduleReserveView(APIView):
             return Response({
                 "message": "The schedule is already taken"
             }, status=status.HTTP_404_NOT_FOUND)
+
+
+
+
+class ChatView(APIView):
+    """
+        **Use Cases**
+
+            Start a scheduled online consultation
+
+        **Example Requests**
+
+            POST /api/consultation/v0/schedules/1/start
+
+        **Response Values for POST**
+
+            If the user is not logged in, a 401 error is returned.
+
+            If the course_id is not given returns a 400 error.
+
+            If the user is not logged in, is not enrolled in the course, or is
+            not course or global staff, returns a 403 error.
+
+            If the course does not exist, returns a 404 error.
+
+            Otherwise, a 201 response is returned containing the following
+            fields:
+
+            * session_id: id of the session
+            * token: token to enter the session
+    """
+
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, schedule_id):
+        """POST /api/consultation/v0/schedules/{schedule_id}/start"""
+        
+        # get schedule with specified id
+        try:
+            schedule = ConsultationSchedule.objects.get(pk=schedule_id)
+        except ConsultationSchedule.DoesNotExist:
+            return Response({
+                    "message": "schedule with id = %s not found" % schedule_id
+                },status=status.HTTP_404_NOT_FOUND)
+        
+        try:
+            course_key = CourseKey.from_string(schedule.course)
+        except InvalidKeyError:
+            return Response({
+                    "message": "invalid course key"
+                },status=status.HTTP_400_BAD_REQUEST)            
+
+        # ensure user is instructor of course
+        if not _has_access_to_course(request.user, "staff", course_key):
+            return Response({
+                    "message": "access denied. you are not a staff of this course."
+                },status=status.HTTP_401_UNAUTHORIZED)
+        
+        # now create a session_id for the consultation
+        api_key = "45327842"
+        api_secret = "d0df6f48f0aed388c438309ba570f723133814bd"
+
+        opentok = OpenTok(api_key, api_secret)
+        
+        # check if there is already
+        if schedule.session_id:
+            # generate a token based on it
+            # Generate a Token from just a session_id (fetched from a database)
+            token = opentok.generate_token(schedule.session_id)
+            response_data = {
+                "session_id": schedule.session_id,
+                "token": token
+            }
+        else:
+            # generate a new session id
+            # Create a session that attempts to send streams directly between clients (falling back
+            # to use the OpenTok TURN server to relay streams if the clients cannot connect):
+            session = opentok.create_session()
+
+            # get session_id to be stored in the database:
+            # Store this session ID in the database
+            session_id = session.session_id
+
+            schedule.session_id = session_id
+            schedule.save()
+
+            # Generate a Token by calling the method on the Session (returned from create_session)
+            token = session.generate_token()
+
+            response_data = {
+                "session_id": session_id,
+                "token": token
+            }
+
+        return Response(response_data)
