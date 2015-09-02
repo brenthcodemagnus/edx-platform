@@ -31,6 +31,10 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 
 			return $http.post(urls.POST_SCHEDULES, schedule);
 		};
+
+		this.startSchedule = function(schedule_id){
+			return $http.post(urls.POST_SCHEDULES + schedule_id + "/start");
+		};
 	}])
 
 	.controller("MySchedulesController", ["$scope", "$stateParams", "$state", "MySchedulesService", "$log", "uiCalendarConfig", "$timeout", function($scope, $stateParams, $state, MySchedulesService, $log, uiCalendarConfig, $timeout){
@@ -92,12 +96,39 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 
 		// view event on day view
 		// affected by getView()
-		$scope.viewEvent = function(date, jsEvent, view){
+		$scope.eventClick = function(date, jsEvent, view){
 			
-			$log.log(date);
+			//$log.log(date);
 	        
 	        /* Change View */
-	        $scope.changeView("agendaDay", date);
+	        //$scope.changeView("agendaDay", date);
+
+	        // get the schedule_id
+	        var schedule_id = date.schedule_id;
+
+	        $scope.startSchedule(schedule_id);
+
+		};
+
+		$scope.startSchedule = function(schedule_id){
+
+			var response = confirm("Start this schedule?");
+
+			if(response){
+				MySchedulesService
+					.startSchedule(schedule_id)
+					.then(
+						function(response){
+							console.log(response);
+							alert("Successfully started schedule");
+						},
+						function(error){
+							console.log(error);
+							alert("Cannot start schedule");
+						}
+					);
+			}
+
 		};
 
 		// this becomes true if time was changed
@@ -158,7 +189,7 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 		            right: 'today prev,next'
 		        },
 		        //dayClick: $scope.alertEventOnClick,
-		        eventClick: $scope.viewEvent,
+		        eventClick: $scope.eventClick,
 		        eventDragStop: $scope.alertEvent,
 		        eventResizeStop: $scope.alertEvent
 		    }
@@ -291,6 +322,7 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 
 				var formattedSchedule = {
 					//title: "Schedule " + (i+1),
+					schedule_id: schedule.id,
 					start: local_start_date,
 					end: local_end_date,
 					stick: true
