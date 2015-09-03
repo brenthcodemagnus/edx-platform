@@ -462,3 +462,79 @@ class ChatView(APIView):
             }
 
         return Response(response_data)
+
+class ChatJoinView(APIView):
+    """
+        **Use Cases**
+
+            Join a scheduled online consultation
+
+        **Example Requests**
+
+            POST /api/consultation/v0/schedules/1/join
+
+        **Response Values for POST**
+
+            If the user is not logged in, a 401 error is returned.
+
+            If the course_id is not given returns a 400 error.
+
+            If the user is not logged in, is not enrolled in the course, or is
+            not course or global staff, returns a 403 error.
+
+            If the course does not exist, returns a 404 error.
+
+            Otherwise, a 201 response is returned containing the following
+            fields:
+
+            * session_id: id of the session
+            * token: token to enter the session
+    """
+
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, schedule_id):
+        """POST /api/consultation/v0/schedules/{schedule_id}/join"""
+        
+        # get schedule with specified id
+        try:
+            schedule = ConsultationSchedule.objects.get(pk=schedule_id, student=request.user)
+        except ConsultationSchedule.DoesNotExist:
+            return Response({
+                    "message": "you have no schedule with id = %s" % schedule_id
+                },status=status.HTTP_404_NOT_FOUND)
+        
+        try:
+            course_key = CourseKey.from_string(schedule.course)
+        except InvalidKeyError:
+            return Response({
+                    "message": "invalid course key"
+                },status=status.HTTP_400_BAD_REQUEST)            
+
+        # check if student is enrolled
+        if not CourseEnrollment.is_enrolled(request.user, course_key):
+            return Response({
+                "message": "you are not enrolled in this course"
+            }, status=status.HTTP_401_UNAUTHORIZED)
+        
+        # now create a session_id for the consultation
+        api_key = "45327842"
+        api_secret = "d0df6f48f0aed388c438309ba570f723133814bd"
+
+        opentok = OpenTok(api_key, api_secret)
+        
+        # check if there is already
+        if schedule.session_id:
+            # generate a token based on it
+            # Generate a Token from just a session_id (fetched from a database)
+            token = opentok.generate_token(schedule.session_id)
+            response_data = {
+                "session_id": schedule.session_id,
+                "token": token
+            }
+            return Response(response_data)
+        else:
+            # it means the schedule has not yet been started
+            return Response({
+                "message": "this schedule has not yet been started by the instructor"
+            }, status=status.HTTP_404_NOT_FOUND)
