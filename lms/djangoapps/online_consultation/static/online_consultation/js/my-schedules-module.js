@@ -41,6 +41,8 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 		
 		var user = _getUser();
 
+		$scope.isInstructor = user.role == "instructor";
+
 		console.log("role is:" + user.role);
 		console.log("username is:" + user.username);
 

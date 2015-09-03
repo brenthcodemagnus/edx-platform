@@ -1,32 +1,34 @@
 
-<p class="text-center">
+<div ng-if="isInstructor">
+	
+	<p class="text-center">
+		<span ng-switch="state">
 
-	<span ng-switch="state">
+			<span ng-switch-when="initial">
 
-		<span ng-switch-when="initial">
+				<a
+					class="btn btn-success btn-lg"
+					ng-click="createSchedule()"
+					>
+					Create schedule
+				</a>
+			</span>
 
-			<a
-				class="btn btn-success btn-lg"
-				ng-click="createSchedule()"
-				>
-				Create schedule
-			</a>
+			<span ng-switch-when="changing">
+				<a
+					class="btn btn-danger"
+					ng-click="cancelSchedule()"
+					>
+					Cancel
+				</a>
+				<a
+					class="btn btn-primary"
+					ng-click="submitSchedule()"
+					>
+					Submit schedule
+				</a>
+			</span>
 		</span>
-
-		<span ng-switch-when="changing">
-			<a
-				class="btn btn-danger"
-				ng-click="cancelSchedule()"
-				>
-				Cancel
-			</a>
-			<a
-				class="btn btn-primary"
-				ng-click="submitSchedule()"
-				>
-				Submit schedule
-			</a>
-		</span>
-	</span>
-</p>
+	</p>
+</div>
 <div ui-calendar="uiConfig.calendar" ng-model="eventSources" calendar="mainCalendar"></div>
