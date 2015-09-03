@@ -41,9 +41,13 @@ define(['angular','ui-router', 'ui-bootstrap', 'instructors-module', 'instructor
 		            controller: "MySchedulesController"
 		        })
 		        .state('chat', {
-		            url: "/chat?session_id",
+		            url: "/chat",
 		            templateUrl: staticUrl("templates/chat.html"),
-		            controller: "ChatController"
+		            controller: "ChatController",
+		            params : {
+		            	session_id: "IS_MISSING",
+		            	token: "IS_MISSING"
+		            }
 		        })
 		})
 

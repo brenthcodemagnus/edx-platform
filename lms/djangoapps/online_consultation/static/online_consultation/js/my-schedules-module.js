@@ -120,11 +120,16 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 					.then(
 						function(response){
 							console.log(response);
-							alert("Successfully started schedule");
+							console.log("Successfully started schedule");
+
+							// redirect to chat view with credentials
+							var credentials = response.data;
+
+							$state.go("chat", credentials);
 						},
 						function(error){
 							console.log(error);
-							alert("Cannot start schedule");
+							console.error("Cannot start schedule");
 						}
 					);
 			}

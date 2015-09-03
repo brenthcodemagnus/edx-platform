@@ -32,24 +32,53 @@ define( dependencies ,function( angular ){
 	// 	};
 	// }])
 
-	.controller("ChatController", ["$scope", "$state", function($scope, $state){
+	.controller("ChatController", ["$scope", "$state", "$stateParams", function($scope, $state, $stateParams){
 		
-		var apiKey;
+		var apiKey
 
-		var sessionId;
+		// two things we need to create a session
+		var sessionId, token;
 
 		var session;
 
-		$scope.session_id = $state.params['session_id'];
-		
-		$scope.initOpenTok = function(){
-			apiKey = 45327842;
-			sessionId = '2_MX40NTMyNzg0Mn5-MTQ0MTAyMzc3OTU2M35OZTdKdlU3cGJSVGYrNEVEandsenlnKzF-UH4';
-			session = OT.initSession(apiKey, sessionId);
+		var initStateCredentials = function(){
+			sessionId = $state.params['session_id'];
+			token = $state.params['token'];
 
-			var token = 'T1==cGFydG5lcl9pZD00NTMyNzg0MiZzaWc9Y2ZiMmE1OWRmZDQwOTZiN2U2YzM2MTQ3NmJhM2YzYjk3MWRlM2VjMDpyb2xlPXB1Ymxpc2hlciZzZXNzaW9uX2lkPTJfTVg0ME5UTXlOemcwTW41LU1UUTBNVEF5TXpjM09UVTJNMzVPWlRkS2RsVTNjR0pTVkdZck5FVkVhbmRzZW5sbkt6Ri1VSDQmY3JlYXRlX3RpbWU9MTQ0MTA5NTgyOCZub25jZT0wLjY5NzY1OTI5MTk3OTYxNTUmZXhwaXJlX3RpbWU9MTQ0MTE4MjIyOA==';
+			console.log("Initialized state credentials with:");
+			console.log("sessionId = ");
+			console.log(sessionId);
+			console.log("token = ");
+			console.log(token);
+		};
+
+		// this function will check if there are passed credentials
+		var checkStateCredentials = function(){
+			// check if sessionId exists
+			if(sessionId == "IS_MISSING" || !sessionId){
+				alert("Missing sessionId");
+				return;
+			}
+
+			// check if token exists
+			if(token == "IS_MISSING" || !token){
+				alert("Missing token");
+				return;
+			}			
+			//pass for now
+			return;
+		};
+		
+		var initOpenTok = function(){
+			// hard code our apiKey Note: this is slightly bad
+			apiKey = 45327842;
+			
+			// initialize session			
+			session = OT.initSession(apiKey, sessionId);
+			
 			session.connect(token, function(error) {
 			    if (error) {
+			    	console.log("Could not connect to session:");
 			        console.log(error.message);
 			    } else {
 			        console.log('connected to session');
@@ -66,8 +95,10 @@ define( dependencies ,function( angular ){
 
 		// self invoking initialization function
 		(function init(){
-			console.log("session_id is: " + $scope.session_id);
-			$scope.initOpenTok();
+
+			initStateCredentials();
+			checkStateCredentials();
+			initOpenTok();
 
 		})();
 
