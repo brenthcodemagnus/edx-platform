@@ -32,8 +32,10 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 			return $http.post(urls.POST_SCHEDULES, schedule);
 		};
 
-		this.startSchedule = function(schedule_id){
-			return $http.post(urls.POST_SCHEDULES + schedule_id + "/start");
+		this.startSchedule = function(schedule_id, role){
+			var action = role == "instructor" ? "start" : "join"
+
+			return $http.post(urls.POST_SCHEDULES + schedule_id + "/" + action);
 		};
 	}])
 
@@ -112,28 +114,44 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 
 		};
 
+		var isValidRole = function(role){
+			if(role == "instructor"){
+				return true;
+			}
+			if(role == "student"){
+				return true;
+			}
+			return false;
+		};
+
 		$scope.startSchedule = function(schedule_id){
 
 			var response = confirm("Start this schedule?");
 
 			if(response){
-				MySchedulesService
-					.startSchedule(schedule_id)
-					.then(
-						function(response){
-							console.log(response);
-							console.log("Successfully started schedule");
+					if(isValidRole(user.role)){
+						MySchedulesService
+							.startSchedule(schedule_id, user.role)
+							.then(
+								function(response){
+									console.log(response);
+									console.log("Successfully started schedule");
 
-							// redirect to chat view with credentials
-							var credentials = response.data;
+									// redirect to chat view with credentials
+									var credentials = response.data;
 
-							$state.go("chat", credentials);
-						},
-						function(error){
-							console.log(error);
-							console.error("Cannot start schedule");
-						}
-					);
+									$state.go("chat", credentials);
+								},
+								function(error){
+									console.log(error);
+									console.error("Cannot start schedule");
+								}
+							);
+					}
+					else{
+						console.log("invalid role");
+					}
+					
 			}
 
 		};
