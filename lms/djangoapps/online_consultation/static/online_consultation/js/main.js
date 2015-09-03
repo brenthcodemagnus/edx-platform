@@ -12,6 +12,9 @@ require.config({
 		'ui-calendar': './calendar_hacked',
 		'full-calendar': '../bower_components/fullcalendar/dist/fullcalendar.min',
 		
+		// for opentok		
+		'ng-tok': '../bower_components/opentok-angular/opentok-angular',
+		'opentok-layout': '../bower_components/opentok-layout-js/opentok-layout',
 		// defined by me
 
 		'instructors-module': './instructors-module',
@@ -41,6 +44,13 @@ require.config({
 		},
 		'ui-calendar': {
 			'deps': ['angular']
+		},
+		'ng-tok': {
+			'exports': 'ng-tok',
+			'deps': ['angular']
+		},
+		'opentok-layout': {
+			'exports': 'opentok-layout'
 		},
 	},
 	map: {

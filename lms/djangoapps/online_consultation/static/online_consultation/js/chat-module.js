@@ -2,15 +2,16 @@
 var dependencies = [
 	'angular',
 	'ui-bootstrap',
+	'ng-tok'
 	// 'jquery',
 	// 'moment',
 	// 'ui-calendar',
 	// 'full-calendar'
 ];
 
-define( dependencies ,function( angular ){
+define( dependencies ,function( angular, uibootstrap, ngTok ){
 	
-	angular.module("chat-module", ['ui.bootstrap'])
+	angular.module("chat-module", ['ui.bootstrap', 'opentok'])
 
 	// .service("InstructorSchedulesService", ["$http", "$q", function($http, $q){
 	// 	// this function gets schedules created by
@@ -32,7 +33,7 @@ define( dependencies ,function( angular ){
 	// 	};
 	// }])
 
-	.controller("ChatController", ["$scope", "$state", "$stateParams", function($scope, $state, $stateParams){
+	.controller("ChatController", ["$scope", "$state", "$stateParams", "OTSession", function($scope, $state, $stateParams, OTSession){
 		
 		var apiKey
 
@@ -69,30 +70,67 @@ define( dependencies ,function( angular ){
 			return;
 		};
 		
+		// var initOpenTok = function(){
+		// 	// hard code our apiKey Note: this is slightly bad
+		// 	apiKey = 45327842;
+			
+		// 	// initialize session			
+		// 	session = OT.initSession(apiKey, sessionId);
+			
+		// 	session.connect(token, function(error) {
+		// 	    if (error) {
+		// 	    	console.log("Could not connect to session:");
+		// 	        console.log(error.message);
+		// 	    } else {
+		// 	        console.log('connected to session');
+		// 	        session.publish('myPublisherDiv', {width: 320, height: 240});
+		// 	    }
+		// 	});
+
+		// 	session.on({
+		// 		streamCreated: function(event) { 
+		// 			session.subscribe(event.stream, 'subscribersDiv', {insertMode: 'append'}); 
+		// 		}
+		// 	});
+		// };
+
+		$scope.$on("otPublisherError", function(arg1, arg2){
+			console.log(arg1);
+			console.log(arg2);
+				
+		});
+
 		var initOpenTok = function(){
 			// hard code our apiKey Note: this is slightly bad
 			apiKey = 45327842;
-			
-			// initialize session			
-			session = OT.initSession(apiKey, sessionId);
-			
-			session.connect(token, function(error) {
+
+			$scope.publisherProps = {width: 320, height: 240};
+			$scope.subscriberProps = {insertMode: 'append'};
+
+			OTSession.init(apiKey, sessionId, token, function(error, session) {
+				// Here you can do things to the OpenTok session
+				// The err is bubbled up from session.connect
 			    if (error) {
 			    	console.log("Could not connect to session:");
 			        console.log(error.message);
 			    } else {
+
 			        console.log('connected to session');
-			        session.publish('myPublisherDiv', {width: 320, height: 240});
+			        
+			        session.publish('myPublisherDiv', $scope.publisherProps);
+					
+					session.on({
+						streamCreated: function(event) { 
+							session.subscribe(event.stream, 'subscribersDiv', $scope.subscriberProps);
+						}
+					});
 			    }
-			});
 
-			session.on({
-				streamCreated: function(event) { 
-					session.subscribe(event.stream, 'subscribersDiv', {insertMode: 'append'}); 
-				}
-			});
+		    });
+
+		    $scope.streams = OTSession.streams;
+
 		};
-
 		// self invoking initialization function
 		(function init(){
 
