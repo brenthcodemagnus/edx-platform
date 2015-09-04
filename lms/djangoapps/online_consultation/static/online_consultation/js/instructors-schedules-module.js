@@ -60,6 +60,28 @@ define( dependencies ,function( angular ){
 			$scope.changeView("agendaDay");
 		};
 
+		var findIndexByScheduleId = function(schedule_id, eventsArray){
+			var index;
+
+			for(var i=0; i<eventsArray.length; i++){
+				if(eventsArray[i]['schedule_id'] == schedule_id){
+					return i;
+				}
+			}
+
+			return -1;
+		};
+
+		var removeSchedule = function(schedule){
+			var index = findIndexByScheduleId(schedule['schedule_id'], $scope.availableSchedules.events);
+
+			console.log("Index of schedule to be removed is: " + index);
+
+			if(index != -1){
+				$scope.availableSchedules.events.splice(index,1);
+			};
+		};
+
 		// reserveSchedule
 		$scope.reserveSchedule = function(schedule, jsEvent, view){
 			
@@ -76,6 +98,7 @@ define( dependencies ,function( angular ){
 					.then(
 						function(response){
 							console.log(response);
+							removeSchedule(schedule);
 							alert("Reservation successful");
 						},
 						function(error){
@@ -83,6 +106,7 @@ define( dependencies ,function( angular ){
 							alert("Reservation failed");
 						}
 					);
+				
 			}
 	        //$scope.changeView("agendaDay", date);
 		};
