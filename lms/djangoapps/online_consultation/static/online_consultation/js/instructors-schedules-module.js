@@ -53,7 +53,7 @@ define( dependencies ,function( angular ){
              events: []
         };
 
-		$scope.eventSources = [$scope.availableSchedules, $scope.takenSchedules];
+		$scope.eventSources = [$scope.availableSchedules/*, $scope.takenSchedules*/];
 
 		$scope.alertEventOnClick = function(date, jsEvent, view){
 			$log.log(date);
@@ -142,11 +142,14 @@ define( dependencies ,function( angular ){
 
 				// if schedules is available, add to availableSchedules events
 				if(!schedule.student){
-					//available
+					// available
 					$scope.availableSchedules.events.push(formattedSchedule);
 				}
 				else{
-					$scope.takenSchedules.events.push(formattedSchedule);	
+					// don't push it
+					//$scope.takenSchedules.events.push(formattedSchedule);
+
+					// NOTE: and dont add $scope.takenSchedules into $scope.eventSources
 				}
 			};
 		};
