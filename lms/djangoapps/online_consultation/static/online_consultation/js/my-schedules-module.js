@@ -223,9 +223,54 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 		$scope.newSchedule = null;
 		var newScheduleIndex = null;
 
+		var findIndexByScheduleId = function( _id, eventsArray){
+			var index;
+
+			for(var i=0; i<eventsArray.length; i++){
+				if(eventsArray[i]['_id'] == _id ){
+					return i;
+				}
+			}
+
+			return -1;
+		};
+
         /* remove schedule */
         var removeSchedule = function(index) {
             $scope.newSchedules.events.splice(index,1);
+        };
+
+        // this function sort of transfers a new schedule
+        // to available schedules but actually, it doesnt
+        // this just makes it appear as if
+        var transferCreatedSchedule = function(schedule, id){
+
+        	// first remove schedule from newSchedules
+        	var index = findIndexByScheduleId(schedule['_id'], $scope.newSchedules.events);
+
+        	if(index != -1){
+        		//before removing, save a copy
+        		var schedule = angular.copy(schedule);
+
+        		// remove it
+        		removeSchedule(index);
+
+        		console.log("schedule was removed");
+        		console.log(schedule);
+        		
+        		//add to available schedules
+        		$scope.availableSchedules.events.push({
+        			schedule_id: id,
+        			start: schedule.start,
+	            	end: schedule.end,
+	            	stick: true
+        		});
+
+        		console.log($scope.availableSchedules.events);
+        	}
+        	else{
+        		console.error("nothing to move");
+        	}
         };
 
 		// this function cancels the creation of schedule
@@ -272,6 +317,16 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 				.then(
 					function(response){
 						console.log(response);
+						console.log("transfer schedule");
+
+						var scheduleID = response.data.schedule_id;
+						
+						transferCreatedSchedule(schedule, scheduleID);
+
+						$scope.setState("initial");
+
+						$scope.changeView("month");
+
 						alert("Success!!! schedule submitted.")
 					},
 					function(error){
@@ -279,7 +334,7 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 						alert("Cannot submit schedule");
 					}
 				);
-
+			
 		};
 
         /* add custom event*/
