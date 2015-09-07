@@ -116,8 +116,9 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 			// to be submitted
 			// will view it in week view
 			else if( $scope.state == "changing" ){
-
-				$scope.changeView("agendaWeek", date.start);
+				console.log("Changing to:");
+				console.log(date.start);
+				$scope.changeView("agendaDay", date.start);
 			}
 
 			// not finished with this part yet
@@ -395,9 +396,7 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
             // goto date if provided
             if(date){
             	$log.log("gotoDate:");
-            	$log.log(date)
-            	$log.log(date.start)
-				uiCalendarConfig.calendars[calendar].fullCalendar('gotoDate', date.start);
+				uiCalendarConfig.calendars[calendar].fullCalendar('gotoDate', date);
             }
         };
 
