@@ -101,16 +101,29 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 		// view event on day view
 		// affected by getView()
 		$scope.eventClick = function(date, jsEvent, view){
-			
-			//$log.log(date);
-	        
-	        /* Change View */
-	        //$scope.changeView("agendaDay", date);
 
-	        // get the schedule_id
-	        var schedule_id = date.schedule_id;
+			// clicking a schedule in
+			// initial state will start it
+			if( $scope.state == "initial" ){
+		        // get the schedule_id
+		        var schedule_id = date.schedule_id;
 
-	        $scope.startSchedule(schedule_id);
+		        $scope.startSchedule(schedule_id);
+			}
+
+			// clicking a schedule while editting
+			// i.e. dragging and dropping a schedule
+			// to be submitted
+			// will view it in week view
+			else if( $scope.state == "changing" ){
+
+				$scope.changeView("agendaWeek", date.start);
+			}
+
+			// not finished with this part yet
+			else{
+				console.error("not finished with this part yet");
+			}
 
 		};
 
