@@ -19,6 +19,7 @@
     "angular-bootstrap": "~0.13.3",
     "require-css": "~0.1.8",
     "angular-ui-calendar": "~1.0.1",
-    "opentok-angular": "~0.4.1"
+    "opentok-angular": "~0.4.1",
+    "requirejs-domready": "~2.0.1"
   }
 }

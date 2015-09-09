@@ -5,6 +5,7 @@ require.config({
 		'ui-router': '../bower_components/angular-ui-router/release/angular-ui-router',
 		'ui-bootstrap': '../bower_components/angular-bootstrap/ui-bootstrap-tpls',
 
+		'domReady': '../bower_components/requirejs-domready/domReady',
 		// for angular-ui-calendar
 		'jquery': '../bower_components/jquery/dist/jquery.min',
 		'moment': '../bower_components/moment/min/moment.min',
@@ -61,16 +62,21 @@ require.config({
 });
 
 var dependencies = [
+	'domReady',
 	'angular',
 	'app_module',
 	'css!../bower_components/bootstrap/dist/css/bootstrap.css',
 	'css!../bower_components/fullcalendar/dist/fullcalendar.css'
 ]
 
-require( dependencies , function (angular, app_module, bootstrap) {
+require( dependencies , function ( domReady, angular, app_module, bootstrap) {
 	
 	'use strict';
-
-	angular.bootstrap(document, ['app']);
+	domReady(function () {
+		//This function is called once the DOM is ready.
+		//It will be safe to query the DOM and manipulate
+		//DOM nodes in this function.
+		angular.bootstrap(document, ['app']);
+	});
 
 });
