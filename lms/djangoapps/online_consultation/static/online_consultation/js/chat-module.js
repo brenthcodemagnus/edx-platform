@@ -104,8 +104,8 @@ define( dependencies ,function( angular, uibootstrap, ngTok ){
 			// hard code our apiKey Note: this is slightly bad
 			apiKey = 45327842;
 
-			$scope.publisherProps = {width: 320, height: 240};
-			$scope.subscriberProps = {insertMode: 'append'};
+			$scope.publisherProps = {width: '100%', height: 400};
+			$scope.subscriberProps = {width: '100%', height:400, insertMode: 'append'};
 
 			OTSession.init(apiKey, sessionId, token, function(error, session) {
 				// Here you can do things to the OpenTok session
