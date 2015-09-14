@@ -13,7 +13,8 @@ require.config({
 		'ui-calendar': './calendar_hacked',
 		'full-calendar': '../bower_components/fullcalendar/dist/fullcalendar.min',
 		
-		// for opentok		
+		// for opentok
+		'tbjs' : ['//static.opentok.com/webrtc/v2.2/js/opentok.min'],
 		'ng-tok': '../bower_components/opentok-angular/opentok-angular',
 		'opentok-layout': '../bower_components/opentok-layout-js/opentok-layout',
 		// defined by me
@@ -48,11 +49,14 @@ require.config({
 		},
 		'ng-tok': {
 			'exports': 'ng-tok',
-			'deps': ['angular']
+			'deps': ['tbjs', 'angular']
 		},
 		'opentok-layout': {
 			'exports': 'opentok-layout'
 		},
+		'tbjs': {
+            'exports': 'OT'
+        }
 	},
 	map: {
 	  '*': {
