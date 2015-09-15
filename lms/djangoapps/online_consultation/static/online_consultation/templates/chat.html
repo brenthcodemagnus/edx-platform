@@ -7,17 +7,18 @@
 	<div>
 		
 		<div class="col-md-6">
-			
-			<div id='myPublisherDiv'></div>
+			<ot-publisher props="publisherProps"></ot-publisher>
+			<!--div id='myPublisherDiv'></div-->
 		</div>
 
 		<div class="col-md-6">
 			
-			<div id='subscribersDiv'></div>
-			<!--ot-subscriber ng-repeat="stream in streams" 
+			<!--div id='subscribersDiv'></div-->
+			<ot-subscriber
+				ng-repeat="stream in streams" 
 			    stream="stream" 
 			    props="subscriberProps">
-			</ot-subscriber-->
+			</ot-subscriber>
 		</div>
 	</div>
 </div>

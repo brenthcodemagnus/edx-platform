@@ -104,7 +104,7 @@ define( dependencies ,function( angular, uibootstrap, ngTok ){
 			// hard code our apiKey Note: this is slightly bad
 			apiKey = 45327842;
 
-			$scope.publisherProps = {width: '100%', height: 400};
+			$scope.publisherProps = {width: '100%', height: 400, insertMode: 'append'};
 			$scope.subscriberProps = {width: '100%', height:400, insertMode: 'append'};
 
 			OTSession.init(apiKey, sessionId, token, function(error, session) {
@@ -117,13 +117,13 @@ define( dependencies ,function( angular, uibootstrap, ngTok ){
 
 			        console.log('connected to session');
 			        
-			        session.publish('myPublisherDiv', $scope.publisherProps);
+			  		// session.publish('myPublisherDiv', $scope.publisherProps);
 					
-					session.on({
-						streamCreated: function(event) { 
-							session.subscribe(event.stream, 'subscribersDiv', $scope.subscriberProps);
-						}
-					});
+					// session.on({
+					// 	streamCreated: function(event) { 
+					// 		session.subscribe(event.stream, 'subscribersDiv', $scope.subscriberProps);
+					// 	}
+					// });
 			    }
 
 		    });
