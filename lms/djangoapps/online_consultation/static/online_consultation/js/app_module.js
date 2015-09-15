@@ -45,8 +45,8 @@ define(['angular','ui-router', 'ui-bootstrap', 'instructors-module', 'instructor
 		            templateUrl: staticUrl("templates/chat.html"),
 		            controller: "ChatController",
 		            params : {
-		            	session_id: "IS_MISSING",
-		            	token: "IS_MISSING"
+		            	session_id: null,
+		            	token: null
 		            }
 		        })
 		})

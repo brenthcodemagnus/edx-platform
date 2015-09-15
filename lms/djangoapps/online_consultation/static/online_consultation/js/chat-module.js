@@ -42,7 +42,10 @@ define( dependencies ,function( angular, uibootstrap, ngTok ){
 
 		var session;
 
+		var missingCredentials = false;
+
 		var initStateCredentials = function(){
+			// get credentials from params
 			sessionId = $state.params['session_id'];
 			token = $state.params['token'];
 
@@ -56,18 +59,16 @@ define( dependencies ,function( angular, uibootstrap, ngTok ){
 		// this function will check if there are passed credentials
 		var checkStateCredentials = function(){
 			// check if sessionId exists
-			if(sessionId == "IS_MISSING" || !sessionId){
-				alert("Missing sessionId");
+			if(!sessionId || !token){
+				console.error("Either sessionId or token is null.");
+				$state.go('mySchedules');
+				missingCredentials = true;
 				return;
 			}
-
-			// check if token exists
-			if(token == "IS_MISSING" || !token){
-				alert("Missing token");
+			else{
+				//pass for now
 				return;
-			}			
-			//pass for now
-			return;
+			}
 		};
 		
 		// var initOpenTok = function(){
@@ -136,7 +137,9 @@ define( dependencies ,function( angular, uibootstrap, ngTok ){
 
 			initStateCredentials();
 			checkStateCredentials();
-			initOpenTok();
+			console.log("missingCredentials is: " + missingCredentials);
+			if (missingCredentials == false)
+				initOpenTok();
 
 		})();
 
