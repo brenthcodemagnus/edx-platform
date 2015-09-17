@@ -12,6 +12,7 @@ class ConsultationSchedule(models.Model):
 	start_date = models.DateTimeField(blank=False, null=False,)
 	end_date = models.DateTimeField(blank=False, null=False,)
 	session_id = models.CharField(max_length=128, blank=True, null=True,)
+	price = models.DecimalField(max_digits=8, decimal_places=2, blank=False, null=False,)
 
 	def is_available(self):
 		if self.student:
