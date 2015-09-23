@@ -1,34 +1,96 @@
 
 <div ng-if="isInstructor">
 	
-	<p class="text-center">
-		<span ng-switch="state">
-
-			<span ng-switch-when="initial">
-
+		<span ng-if="state=='initial'">
+			<div class="text-center">
 				<a
-					class="btn btn-success btn-lg"
+					class="btn btn-success"
 					ng-click="createSchedule()"
 					>
 					Create schedule
 				</a>
-			</span>
-
-			<span ng-switch-when="changing">
-				<a
-					class="btn btn-danger"
-					ng-click="cancelSchedule()"
-					>
-					Cancel
-				</a>
-				<a
-					class="btn btn-primary"
-					ng-click="submitSchedule()"
-					>
-					Submit schedule
-				</a>
-			</span>
+			</div>
 		</span>
-	</p>
+
+		<span ng-if="state=='changing'">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="well clearfix">
+						<form ng-submit="submitSchedule()">
+							<label>Date:</label>
+							<input
+								class="form-control"
+								value="{{ getAdjustedStartDate() | date: 'longDate' }}">
+							
+							<div>
+								<div class="col-md-6">
+									<label>From:</label>
+									<input
+										class="form-control"
+										value="{{ getAdjustedStartDate() | date: 'shortTime' }}">
+								</div>
+								<div class="col-md-6">
+									<label>To:</label>
+									<input
+										class="form-control"
+										value="{{ getAdjustedEndDate() | date: 'shortTime' }}">
+								</div>
+							</div>
+
+							<label>Consultation fee:</label>
+							<input
+								autofocus
+								required
+								placeholder:"Enter amount in US dollars"
+								class="form-control"
+								type="number"
+								step="0.01"
+								min="0"
+								ng-model="newSchedule.price">
+							
+							<br>
+							<div class="pull-right">
+								<a
+									class="btn btn-danger"
+									ng-click="cancelSchedule()"
+									type="button"
+									>
+									Cancel
+								</a>
+								<button
+									class="btn btn-primary"
+									type="submit"
+
+									>
+									Submit schedule
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="alert alert-info">
+						<h3>Instructions</h3>
+						<ol>
+							<li>
+								DRAG the yellow schedule below to adjust day
+							</li>
+							<li>
+								CLICK on the yellow schedule to adjust time
+							</li>
+							<li>
+								SET your price
+							</li>
+							<li>
+								CLICK submit
+							</li>
+						</ol>
+					</div>	
+				</div>
+			</div>
+		</span>
+
 </div>
+<br>
 <div ui-calendar="uiConfig.calendar" ng-model="eventSources" calendar="mainCalendar"></div>

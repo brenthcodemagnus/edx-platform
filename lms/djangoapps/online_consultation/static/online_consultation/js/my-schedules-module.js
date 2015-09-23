@@ -235,6 +235,21 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 		};
 
 		$scope.newSchedule = null;
+		
+		$scope.getAdjustedStartDate = function(){
+			if($scope.needsAdjustment)
+				return adjustTime($scope.newSchedule.start.toDate());
+			else
+				return $scope.newSchedule.start.toDate();
+		};
+
+		$scope.getAdjustedEndDate = function(){
+			if($scope.needsAdjustment)
+				return adjustTime($scope.newSchedule.end.toDate());
+			else
+				return $scope.newSchedule.end.toDate();
+		};
+
 		var newScheduleIndex = null;
 
 		var findIndexByScheduleId = function( _id, eventsArray){
@@ -297,6 +312,8 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 			$scope.setState("initial");
 
 			$scope.changeView("month");
+
+			$scope.needsAdjustment = false;
 		};
 
 		function adjustTime(dateObj){
@@ -305,6 +322,8 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 
 		$scope.submitSchedule = function(){
 			
+			console.log("submitSchedule");
+
 			var schedule = $scope.newSchedule;
 
 			var formattedData;
@@ -313,14 +332,16 @@ define( dependencies ,function( angular, uiBootstrap, jQuery, moment, uiCalendar
 				console.log("needs adjustment");
 				formattedData = {
 					start_date: adjustTime(schedule.start),
-					end_date: adjustTime(schedule.end)
+					end_date: adjustTime(schedule.end),
+					price: schedule.price
 				};
 			}
 			else{
 				console.log("doesn't need adjustment");
 				formattedData = {
 					start_date: schedule.start.toISOString(),
-					end_date: schedule.end.toISOString()
+					end_date: schedule.end.toISOString(),
+					price: schedule.price
 				};
 			}
 
