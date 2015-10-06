@@ -234,7 +234,7 @@ def render_purchase_form_html(cart, callback_url=None, extra_data=None):
         unicode: The rendered HTML form.
 
     """
-    return render_to_string('shoppingcart/cybersource_form.html', {
+    return render_to_string('shoppingcart/paypal_form.html', {
         'action': get_purchase_endpoint(),
         'params': get_signed_purchase_params(
             cart, callback_url=callback_url, extra_data=extra_data
