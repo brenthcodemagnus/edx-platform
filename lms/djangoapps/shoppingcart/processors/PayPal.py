@@ -318,13 +318,13 @@ def get_purchase_params(cart, callback_url=None, extra_data=None):
 
 def get_purchase_endpoint():
     """
-    Return the URL of the payment end-point for CyberSource.
+    Return the URL of the payment end-point for PayPal.
 
     Returns:
         unicode
 
     """
-    return get_processor_config().get('PURCHASE_ENDPOINT', '')
+    return u"https://www.paypal.com/cgi-bin/webscr"
 
 
 def _payment_accepted(order_id, auth_amount, currency, decision):
